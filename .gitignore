@@ -1,0 +1,7 @@
+assets/cache/
+out/
+parts/
+__pycache__/
+*.mp4
+*.png
+!assets/land.png

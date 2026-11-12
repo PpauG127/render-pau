@@ -1,0 +1,55 @@
+name: render
+on:
+  workflow_dispatch:
+    inputs:
+      videos: {description: "Vídeos a renderizar (nombres separados por espacios) o 'all'", default: "all"}
+      per_job: {description: "Escenas por máquina", default: "2"}
+  push:
+    branches: [main]
+    paths: ["videos/**", "lib/**"]
+permissions:
+  contents: write
+concurrency: {group: render-${{ github.ref }}, cancel-in-progress: true}
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs: {matrix: "${{ steps.m.outputs.matrix }}", videos: "${{ steps.m.outputs.videos }}"}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: |
+          V="${{ github.event.inputs.videos }}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            V=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 2>/dev/null | grep '^videos/.*\.py$' | xargs -r -n1 basename | sed 's/\.py$//' | tr '\n' ' ')
+            git diff --name-only ${{ github.event.before }} ${{ github.sha }} 2>/dev/null | grep -q '^lib/' && V=all
+            [ -z "$V" ] && V=all
+          fi
+          python3 tools/plan.py "${V:-all}" "${{ github.event.inputs.per_job || 2 }}" >> "$GITHUB_OUTPUT"
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy: {fail-fast: false, max-parallel: 20, matrix: "${{ fromJson(needs.plan.outputs.matrix) }}"}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - uses: actions/cache@v4
+        with: {path: assets/cache, key: "globe-${{ hashFiles('assets/land.png', 'lib/globe.py') }}"}
+      - run: ./tools/setup.sh
+      - run: python videos/${{ matrix.video }}.py scenes parts/${{ matrix.video }} ${{ matrix.scenes }}
+      - uses: actions/upload-artifact@v4
+        with: {name: "part-${{ matrix.part }}", path: parts/, retention-days: 1}
+  join:
+    needs: [plan, render]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+      - uses: actions/download-artifact@v4
+        with: {pattern: "part-*", path: parts, merge-multiple: true}
+      - run: ./tools/join.sh parts out ${{ needs.plan.outputs.videos }}
+      - uses: actions/upload-artifact@v4
+        with: {name: shorts, path: out/*.mp4, retention-days: 14}
+      - name: Publicar en Releases
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: gh release create "render-${{ github.run_number }}" out/*.mp4 --title "Render ${{ github.run_number }}" --notes "Vídeos: ${{ needs.plan.outputs.videos }}"

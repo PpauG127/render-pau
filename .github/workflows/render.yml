@@ -6,7 +6,7 @@ on:
       per_job: {description: "Escenas por máquina", default: "2"}
   push:
     branches: [main]
-    paths: ["videos/**", "lib/**"]
+    paths: ["videos/**", "lib/**", "tools/**"]
 permissions:
   contents: write
 concurrency:

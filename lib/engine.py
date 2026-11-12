@@ -46,20 +46,119 @@ def _job(i):
     _JOB(i)
 
 def run(SCENES, headline_y=None):
-    def render_frame(idx, t, T):
+    XT = 0.65   # transition length (s): scene i blends from scene i-1 during its first XT seconds
+
+    def layer(idx, t, T):
         dur, text, hl, hlc, fn = SCENES[idx][:5]
+        L = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
+        c = cairo.Context(L)
+        c.set_line_cap(cairo.LINE_CAP_ROUND); c.set_line_join(cairo.LINE_JOIN_ROUND)
+        # slow camera push + drift: the picture never stands still
+        k = clamp(t / dur)
+        z = 1.0 + 0.045 * eio(k)
+        c.translate(CX + 10 * math.sin(T * 0.45), 1150 + 8 * math.sin(T * 0.37 + 1))
+        c.scale(z, z); c.rotate(0.006 * math.sin(T * 0.3))
+        c.translate(-CX, -1150)
+        c.push_group()
+        fn(c, t, dur)
+        c.pop_group_to_source(); c.paint()
+        c.identity_matrix()
+        yc = SCENES[idx][5] if len(SCENES[idx]) > 5 else 400
+        draw_headline(c, t - (0.32 if idx > 0 else 0.0), text, hl, hlc, ycenter=yc)
+        return L
+
+    def paint_layer(ctx, L, a=1.0, sc=1.0, dx=0.0, dy=0.0, blur=0, clip_r=None):
+        if a <= 0.003: return
+        ctx.save()
+        if clip_r is not None:
+            ctx.arc(CX, 1150, max(1, clip_r), 0, 6.2832); ctx.clip()
+        ctx.translate(CX + dx, 1150 + dy); ctx.scale(sc, sc); ctx.translate(-CX, -1150)
+        if blur:
+            n = 4
+            for i in range(n):
+                ctx.set_source_surface(L, blur * (i - (n - 1) / 2) / n, 0); ctx.paint_with_alpha(a / n * 1.15)
+        else:
+            ctx.set_source_surface(L, 0, 0); ctx.paint_with_alpha(a)
+        ctx.restore()
+
+    def small_copy(src, f):
+        sm = cairo.ImageSurface(cairo.FORMAT_ARGB32, W // f, H // f)
+        c = cairo.Context(sm); c.scale(1 / f, 1 / f); c.set_source_surface(src, 0, 0)
+        c.get_source().set_filter(cairo.FILTER_GOOD); c.paint()
+        return sm
+
+    def paint_small(ctx, sm, f, a, dx=0, dy=0, op=None, color=None):
+        ctx.save(); ctx.translate(dx, dy); ctx.scale(f, f)
+        if op is not None: ctx.set_operator(op)
+        pat = cairo.SurfacePattern(sm); pat.set_filter(cairo.FILTER_BILINEAR)
+        if color is not None:
+            ctx.set_source_rgba(color[0], color[1], color[2], a); ctx.mask(pat)
+        else:
+            ctx.set_source(pat); ctx.paint_with_alpha(a)
+        ctx.restore()
+
+    NEB = [(200, 500, 520, (0.1, 0.5, 0.9), 0.13, 0.11), (900, 1300, 620, (0.45, 0.2, 0.8), 0.10, 0.07),
+           (350, 1700, 480, (0.0, 0.7, 0.8), 0.08, 0.09), (850, 300, 400, (0.9, 0.45, 0.1), 0.05, 0.13)]
+    BOKEH = [(random.Random(i).uniform(0, W), random.Random(i + 50).uniform(0, H), random.Random(i + 99).uniform(14, 40),
+              random.Random(i + 7).uniform(8, 25)) for i in range(14)]
+
+    def render_frame(idx, t, T):
+        dur = SCENES[idx][0]
         surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
         ctx = cairo.Context(surf)
         draw_bg(ctx, T)
-        env = min(prog(t, 0, 0.16), 1 - prog(t, dur - 0.14, dur))
-        if idx == len(SCENES) - 1:
-            env = min(prog(t, 0, 0.16), 1 - prog(t, dur - 0.5, dur))
-        ctx.push_group()
-        ctx.set_line_cap(cairo.LINE_CAP_ROUND); ctx.set_line_join(cairo.LINE_JOIN_ROUND)
-        fn(ctx, t, dur)
-        yc = SCENES[idx][5] if len(SCENES[idx]) > 5 else 400
-        draw_headline(ctx, t, text, hl, hlc, ycenter=yc)
-        ctx.pop_group_to_source(); ctx.paint_with_alpha(env)
+        for (x, y, r, c, al, sp) in NEB:   # slow drifting nebula light
+            xx = x + 120 * math.sin(T * sp); yy = y + 90 * math.cos(T * sp * 1.3)
+            g = cairo.RadialGradient(xx, yy, 0, xx, yy, r)
+            g.add_color_stop_rgba(0, c[0], c[1], c[2], al); g.add_color_stop_rgba(1, c[0], c[1], c[2], 0)
+            ctx.set_source(g); ctx.paint()
+        # ---- foreground (scene layers + transitions)
+        fg = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
+        fc = cairo.Context(fg)
+        cur = layer(idx, t, T)
+        if idx > 0 and t < XT:
+            p = eio(t / XT)
+            pdur = SCENES[idx - 1][0]
+            prev = layer(idx - 1, pdur + t, T)
+            style = idx % 4
+            if style == 0:      # zoom through
+                paint_layer(fc, prev, (1 - p) ** 2, 1 + 0.35 * p)
+                paint_layer(fc, cur, p, 0.82 + 0.18 * p)
+            elif style == 1:    # vertical slide with motion blur
+                paint_layer(fc, prev, (1 - p) ** 2, 1, 0, -700 * p)
+                paint_layer(fc, cur, min(1, p * 1.6), 1, 0, 700 * (1 - p))
+            elif style == 2:    # whip pan
+                bl = 140 * math.sin(p * math.pi)
+                paint_layer(fc, prev, (1 - p) ** 2, 1, -900 * p, 0, blur=bl)
+                paint_layer(fc, cur, p, 1, 900 * (1 - p), 0, blur=bl)
+            else:               # circular reveal
+                paint_layer(fc, prev, (1 - p) ** 1.5, 1 + 0.08 * p)
+                paint_layer(fc, cur, 1, 1.06 - 0.06 * p, clip_r=1250 * p)
+                fc.arc(CX, 1150, 1250 * p, 0, 6.2832); rgba(fc, CYAN, 0.8 * (1 - p)); fc.set_line_width(10); fc.stroke()
+        else:
+            paint_layer(fc, cur)
+        # ---- realism pass: soft contact shadow, the layer, bloom
+        sm = small_copy(fg, 8)
+        paint_small(ctx, sm, 8, 0.6, 0, 28, color=(0, 0, 0.02))
+        ctx.set_source_surface(fg, 0, 0); ctx.paint()
+        sb = small_copy(fg, 6)
+        paint_small(ctx, sb, 6, 0.33, op=cairo.OPERATOR_ADD)
+        # foreground bokeh dust (depth)
+        for (x, y, r, sp) in BOKEH:
+            yy = (y - T * sp) % (H + 200) - 100; xx = x + 30 * math.sin(T * 0.3 + y)
+            g = cairo.RadialGradient(xx, yy, 0, xx, yy, r)
+            g.add_color_stop_rgba(0, 0.7, 0.9, 1, 0.10); g.add_color_stop_rgba(1, 0.7, 0.9, 1, 0)
+            ctx.set_source(g); ctx.arc(xx, yy, r, 0, 6.2832); ctx.fill()
+        # vignette
+        v = cairo.RadialGradient(CX, 1000, 500, CX, 1000, 1250)
+        v.add_color_stop_rgba(0, 0, 0, 0, 0); v.add_color_stop_rgba(1, 0, 0, 0.02, 0.55)
+        ctx.set_source(v); ctx.paint()
+        # only the very start and the very end fade (no hard cuts anywhere)
+        f = 1.0
+        if idx == 0: f = min(f, prog(t, 0, 0.25))
+        if idx == len(SCENES) - 1: f = min(f, 1 - prog(t, dur - 0.5, dur))
+        if f < 1:
+            ctx.set_source_rgba(0.01, 0.02, 0.06, 1 - f); ctx.paint()
         return surf
 
     def start(idx): return sum(s[0] for s in SCENES[:idx])

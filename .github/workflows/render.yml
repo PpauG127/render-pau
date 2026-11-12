@@ -9,11 +9,15 @@ on:
     paths: ["videos/**", "lib/**"]
 permissions:
   contents: write
-concurrency: {group: render-${{ github.ref }}, cancel-in-progress: true}
+concurrency:
+  group: "render-${{ github.ref }}"
+  cancel-in-progress: true
 jobs:
   plan:
     runs-on: ubuntu-latest
-    outputs: {matrix: "${{ steps.m.outputs.matrix }}", videos: "${{ steps.m.outputs.videos }}"}
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+      videos: ${{ steps.m.outputs.videos }}
     steps:
       - uses: actions/checkout@v4
       - id: m
@@ -28,17 +32,25 @@ jobs:
   render:
     needs: plan
     runs-on: ubuntu-latest
-    strategy: {fail-fast: false, max-parallel: 20, matrix: "${{ fromJson(needs.plan.outputs.matrix) }}"}
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12", cache: pip}
       - uses: actions/cache@v4
-        with: {path: assets/cache, key: "globe-${{ hashFiles('assets/land.png', 'lib/globe.py') }}"}
+        with:
+          path: assets/cache
+          key: "globe-${{ hashFiles('assets/land.png', 'lib/globe.py') }}"
       - run: ./tools/setup.sh
       - run: python videos/${{ matrix.video }}.py scenes parts/${{ matrix.video }} ${{ matrix.scenes }}
       - uses: actions/upload-artifact@v4
-        with: {name: "part-${{ matrix.part }}", path: parts/, retention-days: 1}
+        with:
+          name: "part-${{ matrix.part }}"
+          path: parts/
+          retention-days: 1
   join:
     needs: [plan, render]
     runs-on: ubuntu-latest
@@ -51,5 +63,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: {name: shorts, path: out/*.mp4, retention-days: 14}
       - name: Publicar en Releases
-        env: {GH_TOKEN: "${{ github.token }}"}
-        run: gh release create "render-${{ github.run_number }}" out/*.mp4 --title "Render ${{ github.run_number }}" --notes "Vídeos: ${{ needs.plan.outputs.videos }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "render-${{ github.run_number }}" out/*.mp4 --title "Render ${{ github.run_number }}" --notes "Videos - ${{ needs.plan.outputs.videos }}"

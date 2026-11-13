@@ -45,7 +45,7 @@ _JOB = None
 def _job(i):
     _JOB(i)
 
-def run(SCENES, headline_y=None):
+def run(SCENES, headline_y=None, theme='space', fades=True):
     XT = 0.65   # transition length (s): scene i blends from scene i-1 during its first XT seconds
 
     def layer(idx, t, T):
@@ -99,6 +99,8 @@ def run(SCENES, headline_y=None):
 
     NEB = [(200, 500, 520, (0.1, 0.5, 0.9), 0.13, 0.11), (900, 1300, 620, (0.45, 0.2, 0.8), 0.10, 0.07),
            (350, 1700, 480, (0.0, 0.7, 0.8), 0.08, 0.09), (850, 300, 400, (0.9, 0.45, 0.1), 0.05, 0.13)]
+    NEB_NOIR = [(250, 600, 600, (0.25, 0.3, 0.4), 0.10, 0.08), (850, 1400, 650, (0.5, 0.08, 0.1), 0.07, 0.06),
+                (500, 1800, 500, (0.2, 0.25, 0.35), 0.08, 0.1)]
     BOKEH = [(random.Random(i).uniform(0, W), random.Random(i + 50).uniform(0, H), random.Random(i + 99).uniform(14, 40),
               random.Random(i + 7).uniform(8, 25)) for i in range(14)]
 
@@ -106,8 +108,13 @@ def run(SCENES, headline_y=None):
         dur = SCENES[idx][0]
         surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
         ctx = cairo.Context(surf)
-        draw_bg(ctx, T)
-        for (x, y, r, c, al, sp) in NEB:   # slow drifting nebula light
+        if theme == 'noir':
+            g0 = cairo.LinearGradient(0, 0, 0, H)
+            g0.add_color_stop_rgb(0, 0.03, 0.035, 0.05); g0.add_color_stop_rgb(1, 0.01, 0.012, 0.02)
+            ctx.set_source(g0); ctx.paint()
+        else:
+            draw_bg(ctx, T)
+        for (x, y, r, c, al, sp) in (NEB_NOIR if theme == 'noir' else NEB):   # slow drifting nebula light
             xx = x + 120 * math.sin(T * sp); yy = y + 90 * math.cos(T * sp * 1.3)
             g = cairo.RadialGradient(xx, yy, 0, xx, yy, r)
             g.add_color_stop_rgba(0, c[0], c[1], c[2], al); g.add_color_stop_rgba(1, c[0], c[1], c[2], 0)
@@ -155,8 +162,8 @@ def run(SCENES, headline_y=None):
         ctx.set_source(v); ctx.paint()
         # only the very start and the very end fade (no hard cuts anywhere)
         f = 1.0
-        if idx == 0: f = min(f, prog(t, 0, 0.25))
-        if idx == len(SCENES) - 1: f = min(f, 1 - prog(t, dur - 0.5, dur))
+        if fades and idx == 0: f = min(f, prog(t, 0, 0.25))
+        if fades and idx == len(SCENES) - 1: f = min(f, 1 - prog(t, dur - 0.5, dur))
         if f < 1:
             ctx.set_source_rgba(0.01, 0.02, 0.06, 1 - f); ctx.paint()
         return surf

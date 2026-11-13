@@ -17,6 +17,10 @@ POSES = {
     'pray':    dict(la=(0.9, 1.9), ra=(-0.9, -1.9), ll=(1.5, -1.6), rl=(-1.5, 1.6), dy=110),
     'relief':  dict(la=(0.35, 0.2), ra=(-0.35, -0.2), ll=(0.1, 0.0), rl=(-0.1, 0.0)),
     'shrug':   dict(la=(1.0, -1.7), ra=(-1.0, 1.7), ll=(0.12, 0.0), rl=(-0.12, 0.0)),
+    'sit':     dict(la=(0.5, 0.4), ra=(-0.5, -0.4), ll=(1.5, 0.05), rl=(1.38, 0.12)),
+    'hug':     dict(la=(-0.6, -1.7), ra=(0.6, 1.7), ll=(1.5, 0.05), rl=(1.38, 0.12)),
+    'wave':    dict(la=(0.5, 0.4), ra=(-2.9, -0.4), ll=(1.5, 0.05), rl=(1.38, 0.12)),
+    'aim':     dict(la=(0.5, 0.4), ra=(-2.2, 0.0), ll=(1.5, 0.05), rl=(1.38, 0.12)),
     'point':   dict(la=(0.15, 0.1), ra=(-1.57, 0.0), ll=(0.12, 0.0), rl=(-0.12, 0.0)),
 }
 
@@ -33,13 +37,14 @@ def lerp_pose(a, b, k):
     return out
 
 def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat', blink=0.0, rot=0.0, a=1.0,
-             phone=False, sweat=0.0, t=0.0, col=INK):
+             phone=False, sweat=0.0, t=0.0, col=INK, shadow=True):
     P = POSES[pose] if isinstance(pose, str) else pose
     ctx.save(); ctx.translate(x, y + P.get('dy', 0) * s); ctx.rotate(rot); ctx.scale(s, s)
     ctx.push_group()
     # ground shadow
-    ctx.save(); ctx.scale(1, 0.18); ctx.arc(0, 10 / 0.18, 95, 0, 6.3); ctx.restore()
-    rgba(ctx, (0, 0, 0), 0.45); ctx.fill()
+    if shadow:
+        ctx.save(); ctx.scale(1, 0.18); ctx.arc(0, 10 / 0.18, 95, 0, 6.3); ctx.restore()
+        rgba(ctx, (0, 0, 0), 0.45); ctx.fill()
     lw = 17
     ctx.set_line_width(lw); ctx.set_line_cap(cairo.LINE_CAP_ROUND); ctx.set_line_join(cairo.LINE_JOIN_ROUND)
     hip = (0, -150); sh = (0, -285)

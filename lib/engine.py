@@ -1,7 +1,7 @@
 """Shared renderer for the channel's Shorts."""
 import cairo, math, random, subprocess, sys, os
 from base import (W, H, FPS, CX, CYAN, ORANGE, YELLOW, WHITE, RED, NAVY, FONT, clamp, prog, eo, eio, eback,
-                  rgba, glow_stroke, glow_dot, dashed_line, poly_partial, point_at, draw_poly, draw_bg)
+                  rgba, glow_stroke, glow_dot, dashed_line, poly_partial, point_at, draw_poly, draw_bg, CY, LANDSCAPE)
 from render2 import label, rr, arrow_head, lin, draw_headline, BOLD, NORM, GREEN
 
 BLUE = (0.3, 0.55, 1.0)
@@ -56,9 +56,9 @@ def run(SCENES, headline_y=None, theme='space', fades=True):
         # slow camera push + drift: the picture never stands still
         k = clamp(t / dur)
         z = 1.0 + 0.045 * eio(k)
-        c.translate(CX + 10 * math.sin(T * 0.45), 1150 + 8 * math.sin(T * 0.37 + 1))
+        c.translate(CX + 10 * math.sin(T * 0.45), CY + 8 * math.sin(T * 0.37 + 1))
         c.scale(z, z); c.rotate(0.006 * math.sin(T * 0.3))
-        c.translate(-CX, -1150)
+        c.translate(-CX, -CY)
         c.push_group()
         fn(c, t, dur)
         c.pop_group_to_source(); c.paint()
@@ -71,8 +71,8 @@ def run(SCENES, headline_y=None, theme='space', fades=True):
         if a <= 0.003: return
         ctx.save()
         if clip_r is not None:
-            ctx.arc(CX, 1150, max(1, clip_r), 0, 6.2832); ctx.clip()
-        ctx.translate(CX + dx, 1150 + dy); ctx.scale(sc, sc); ctx.translate(-CX, -1150)
+            ctx.arc(CX, CY, max(1, clip_r), 0, 6.2832); ctx.clip()
+        ctx.translate(CX + dx, CY + dy); ctx.scale(sc, sc); ctx.translate(-CX, -CY)
         if blur:
             n = 4
             for i in range(n):
@@ -115,7 +115,7 @@ def run(SCENES, headline_y=None, theme='space', fades=True):
         else:
             draw_bg(ctx, T)
         for (x, y, r, c, al, sp) in (NEB_NOIR if theme == 'noir' else NEB):   # slow drifting nebula light
-            xx = x + 120 * math.sin(T * sp); yy = y + 90 * math.cos(T * sp * 1.3)
+            xx = x * W / 1080 + 120 * math.sin(T * sp); yy = y * H / 1920 + 90 * math.cos(T * sp * 1.3)
             g = cairo.RadialGradient(xx, yy, 0, xx, yy, r)
             g.add_color_stop_rgba(0, c[0], c[1], c[2], al); g.add_color_stop_rgba(1, c[0], c[1], c[2], 0)
             ctx.set_source(g); ctx.paint()
@@ -127,8 +127,11 @@ def run(SCENES, headline_y=None, theme='space', fades=True):
             p = eio(t / XT)
             pdur = SCENES[idx - 1][0]
             prev = layer(idx - 1, pdur + t, T)
-            style = idx % 4
-            if style == 0:      # zoom through
+            style = SCENES[idx][6] if len(SCENES[idx]) > 6 else idx % 4
+            if style == 'dissolve':
+                paint_layer(fc, prev, 1 - p, 1 + 0.03 * p)
+                paint_layer(fc, cur, p, 1.03 - 0.03 * p)
+            elif style == 0:      # zoom through
                 paint_layer(fc, prev, (1 - p) ** 2, 1 + 0.35 * p)
                 paint_layer(fc, cur, p, 0.82 + 0.18 * p)
             elif style == 1:    # vertical slide with motion blur
@@ -141,7 +144,7 @@ def run(SCENES, headline_y=None, theme='space', fades=True):
             else:               # circular reveal
                 paint_layer(fc, prev, (1 - p) ** 1.5, 1 + 0.08 * p)
                 paint_layer(fc, cur, 1, 1.06 - 0.06 * p, clip_r=1250 * p)
-                fc.arc(CX, 1150, 1250 * p, 0, 6.2832); rgba(fc, CYAN, 0.8 * (1 - p)); fc.set_line_width(10); fc.stroke()
+                fc.arc(CX, CY, 1250 * p, 0, 6.2832); rgba(fc, CYAN, 0.8 * (1 - p)); fc.set_line_width(10); fc.stroke()
         else:
             paint_layer(fc, cur)
         # ---- realism pass: soft contact shadow, the layer, bloom
@@ -157,7 +160,7 @@ def run(SCENES, headline_y=None, theme='space', fades=True):
             g.add_color_stop_rgba(0, 0.7, 0.9, 1, 0.10); g.add_color_stop_rgba(1, 0.7, 0.9, 1, 0)
             ctx.set_source(g); ctx.arc(xx, yy, r, 0, 6.2832); ctx.fill()
         # vignette
-        v = cairo.RadialGradient(CX, 1000, 500, CX, 1000, 1250)
+        v = cairo.RadialGradient(CX, H * 0.52, 0.26 * max(W, H), CX, H * 0.52, 0.65 * max(W, H))
         v.add_color_stop_rgba(0, 0, 0, 0, 0); v.add_color_stop_rgba(1, 0, 0, 0.02, 0.55)
         ctx.set_source(v); ctx.paint()
         # only the very start and the very end fade (no hard cuts anywhere)
@@ -191,13 +194,15 @@ def run(SCENES, headline_y=None, theme='space', fades=True):
         from PIL import Image
         out = sys.argv[2]
         ims = []
-        for i, s in enumerate(SCENES):
+        step = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+        tw, th = (480, 270) if LANDSCAPE else (405, 720)
+        for i, s in list(enumerate(SCENES))[::step]:
             tt = s[0] * 0.8
             render_frame(i, tt, start(i) + tt).write_to_png("/tmp/_f.png")
-            ims.append(Image.open("/tmp/_f.png").convert("RGB").resize((405, 720)))
-        cols = 5; rows = (len(ims) + cols - 1) // cols
-        sh = Image.new("RGB", (405 * cols, 720 * rows))
-        for i, im in enumerate(ims): sh.paste(im, ((i % cols) * 405, (i // cols) * 720))
+            ims.append(Image.open("/tmp/_f.png").convert("RGB").resize((tw, th)))
+        cols = 4 if LANDSCAPE else 5; rows = (len(ims) + cols - 1) // cols
+        sh = Image.new("RGB", (tw * cols, th * rows))
+        for i, im in enumerate(ims): sh.paste(im, ((i % cols) * tw, (i // cols) * th))
         sh.save(out)
     elif mode == "scenes":
         os.makedirs(sys.argv[2], exist_ok=True)

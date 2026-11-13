@@ -1,7 +1,10 @@
 import cairo, math, random, subprocess, sys, os
 
-W, H, FPS = 1080, 1920, 30
+import os as _os
+LANDSCAPE = _os.environ.get('FMT') == '16x9'
+W, H, FPS = (1920, 1080, 30) if LANDSCAPE else (1080, 1920, 30)
 CX = W / 2
+CY = H / 2 if LANDSCAPE else 1150
 CYAN = (0.13, 0.89, 1.0)
 ORANGE = (1.0, 0.54, 0.12)
 YELLOW = (1.0, 0.82, 0.25)

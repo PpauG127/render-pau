@@ -39,13 +39,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12", cache: pip}
+        with: {python-version: "3.13", cache: pip}
       - uses: actions/cache@v4
         with:
           path: assets/cache
           key: "globe-${{ hashFiles('assets/land.png', 'lib/globe.py') }}"
       - run: ./tools/setup.sh
+      - name: Blender (solo vídeos 3D)
+        if: startsWith(matrix.video, '3d_')
+        run: |
+          sudo apt-get install -y -qq libxrender1 libxxf86vm1 libxfixes3 libxi6 libxkbcommon0 libsm6 libgl1 >/dev/null
+          pip install -q bpy
       - run: python videos/${{ matrix.video }}.py scenes parts/${{ matrix.video }} ${{ matrix.scenes }}
+        timeout-minutes: 300
       - uses: actions/upload-artifact@v4
         with:
           name: "part-${{ matrix.part }}"

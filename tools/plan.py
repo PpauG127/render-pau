@@ -18,6 +18,7 @@ def count(name):
 arg = sys.argv[1].strip() if len(sys.argv) > 1 else 'all'
 per = int(sys.argv[2]) if len(sys.argv) > 2 else 2
 names = sorted(f[:-3] for f in os.listdir(os.path.join(root, 'videos')) if f.endswith('.py')) if arg in ('', 'all') else arg.split()
+names = [v for v in names if os.path.exists(os.path.join(root, f'videos/{v}.py'))]
 inc = []
 for v in names:
     n, pj = count(v)

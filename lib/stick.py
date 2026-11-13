@@ -37,7 +37,7 @@ def lerp_pose(a, b, k):
     return out
 
 def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat', blink=0.0, rot=0.0, a=1.0,
-             phone=False, sweat=0.0, t=0.0, col=INK, shadow=True, tilt=0.0, squash=0.0, emote=None, shiver=0.0):
+             phone=False, sweat=0.0, t=0.0, col=INK, shadow=True, tilt=0.0, squash=0.0, emote=None, shiver=0.0, helmet=False, frost=0.0):
     P = POSES[pose] if isinstance(pose, str) else pose
     jx = shiver * 6 * math.sin(t * 70)
     ctx.save(); ctx.translate(x + jx * s, y + P.get('dy', 0) * s); ctx.rotate(rot); ctx.scale(s * (1 + 0.5 * squash), s * (1 - squash))
@@ -49,6 +49,8 @@ def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat',
     lw = 17
     ctx.set_line_width(lw); ctx.set_line_cap(cairo.LINE_CAP_ROUND); ctx.set_line_join(cairo.LINE_JOIN_ROUND)
     hip = (0, -150); sh = (0, -285)
+    if helmet:
+        rr(ctx, -62, -300, 50, 130, 12); fill_grad(ctx, STEEL, -62, 0, -12, 0); ctx.fill()
     def limb(origin, ang, l1, l2):
         a1, a2 = ang
         e = (origin[0] + l1 * math.sin(a1), origin[1] + l1 * math.cos(a1))
@@ -116,6 +118,15 @@ def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat',
             ctx.move_to(sx * 25, hy + 12); ctx.line_to(sx * 32, hy + 30 + 60 * q)
             rgba(ctx, (0.5, 0.8, 1.0), 0.8); ctx.set_line_width(8); ctx.stroke()
     ctx.restore()
+    if helmet:
+        g = cairo.RadialGradient(-30, hy - 40, 10, 0, hy, 105)
+        g.add_color_stop_rgba(0, 1, 1, 1, 0.25); g.add_color_stop_rgba(0.8, 0.6, 0.85, 1, 0.12); g.add_color_stop_rgba(1, 0.8, 0.9, 1, 0.5)
+        ctx.arc(0, hy, 100, 0, 6.3); ctx.set_source(g); ctx.fill_preserve()
+        rgba(ctx, (0.85, 0.9, 1), 0.9); ctx.set_line_width(6); ctx.stroke()
+        ctx.arc(0, hy, 86, 3.6, 4.4); rgba(ctx, WHITE, 0.7); ctx.set_line_width(8); ctx.stroke()
+        rr(ctx, -55, hy + 88, 110, 26, 10); fill_grad(ctx, STEEL, 0, hy + 88, 0, hy + 114); ctx.fill()
+    if frost > 0:
+        ctx.arc(0, hy, 72, 0, 6.3); rgba(ctx, (0.6, 0.85, 1.0), 0.5 * frost); ctx.fill()
     if emote in ('!', '?', '!!'):
         pp = max(0.02, min(1.0, (t % 10) * 6))
         ctx.save(); ctx.translate(95, hy - 120); ctx.rotate(0.2 * math.sin(t * 9)); ctx.scale(pp, pp)

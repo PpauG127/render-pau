@@ -117,7 +117,7 @@ def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat',
             rgba(ctx, (0.5, 0.8, 1.0), 0.8); ctx.set_line_width(8); ctx.stroke()
     ctx.restore()
     if emote in ('!', '?', '!!'):
-        pp = min(1.0, (t % 10) * 6)
+        pp = max(0.02, min(1.0, (t % 10) * 6))
         ctx.save(); ctx.translate(95, hy - 120); ctx.rotate(0.2 * math.sin(t * 9)); ctx.scale(pp, pp)
         ctx.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD); ctx.set_font_size(120)
         ctx.move_to(-30, 40); ctx.text_path(emote)

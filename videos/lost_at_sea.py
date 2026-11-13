@@ -76,7 +76,7 @@ BEATS = [
  ('choice', dict(a='WHICH ONE DID', b='YOU GET WRONG?', cta=1, day=7), "So, which choice would you have gotten wrong? Tell me in the comments, and tell me where I should drop you next."),
 ]
 
-def split_text(txt, maxw=9):
+def split_text(txt, maxw=7):
     sents = re.findall(r'[^.?!]+[.?!]*', txt)
     out = []
     for s in sents:
@@ -90,7 +90,7 @@ def split_text(txt, maxw=9):
             if buf and len(buf) + len(pw) > maxw:
                 out.append(' '.join(buf)); buf = []
             buf += pw
-            while len(buf) > maxw + 3:
+            while len(buf) > maxw + 1:
                 out.append(' '.join(buf[:maxw])); buf = buf[maxw:]
         if buf: out.append(' '.join(buf))
     return out
@@ -109,18 +109,78 @@ def build():
             if tpl == 'choice' and ci == len(chunks) - 1 and not P.get('cta'): dur += 3.0
             if tpl == 'title': dur = max(dur, 2.2)
             Q = dict(P); Q.update(state); Q['ci'] = ci; Q['boff'] = boff; Q['text'] = ch; Q['tpl'] = tpl
-            Q['shot'] = P.get('shot') or ['wide', 'close', 'low', 'mid'][(bi + ci) % 4]
+            Q['shot'] = P.get('shot') or ['wide', 'close', 'low', 'mid', 'dutch'][(bi + ci) % 5]
+            Q['shotB'] = ['close', 'dutch', 'wide', 'low', 'mid'][(bi + ci + 2) % 5]
+            if Q['shotB'] == Q['shot']: Q['shotB'] = 'close' if Q['shot'] != 'close' else 'wide'
+            words = [w.strip('.,?!').lower() for w in ch.split()]
+            Q['danger'] = any(w in DANGER for w in words) or P.get('fear', 0) >= 0.8 or P.get('time') == 'storm'
+            Q['react'] = tpl == 'sea' and (Q['danger'] or 'emote' in P) and ci % 2 == 0
+            if 'emote' not in P:
+                Q['emote'] = '!' if Q['danger'] else ('?' if '?' in ch else None)
+            Q['start'] = sum(x[0] for x in scenes)
             fn = lambda ctx, t, d, Q=Q: SCENE(ctx, t, d, Q)
             style = styles[bi % 4] if ci == 0 else 'dissolve'
             scenes.append((dur, "", set(), (1, 1, 1), fn, 0, style)); boff += dur
     return scenes
 
+DANGER = {'fin', 'fins', 'shark', 'sharks', 'storm', 'cold', 'gone', 'salt', 'seawater', 'wrong', 'never', 'brutal',
+          'unbearable', 'thirstier', 'confused', 'black', 'slams', 'burned', 'cracked', 'weak', 'hurts', 'closer', 'sinks', 'disappears'}
+GOOD = {'water', 'drink', 'shade', 'seconds', 'alone', 'dew', 'fresh', 'ship', 'plane', 'rain', 'land', 'mirror', 'saw', 'saved', 'food', 'fish', 'twist', 'calm', 'flash', 'rescue', 'island'}
+
+def word_times(text, t0, t1):
+    words = text.split(); wts = [len(w.strip('.,?!')) + 2.5 for w in words]; tot = sum(wts); out = []; acc = t0
+    for w, v in zip(words, wts):
+        out.append((w, acc)); acc += (t1 - t0) * v / tot
+    return out
+
 def SCENE(ctx, t, d, Q):
-    TEMPLATES[Q['tpl']](ctx, t, d, Q)
+    tpl = Q['tpl']
+    wt = word_times(Q['text'], 0.3, d - 0.15)
+    key = next(((w, tw) for w, tw in wt if w.strip('.,?!').lower() in DANGER | GOOD or any(c.isdigit() for c in w)), None)
+    shake = 0.0
+    if key and 0 <= t - key[1] < 0.35: shake = 1 - (t - key[1]) / 0.35
+    cut = d * 0.52 if tpl in ('sea', 'close') and d >= 2.2 else None
+    punch = 0.0
+    ctx.save()
+    if cut is not None and t >= cut:
+        punch = max(0.0, 1 - (t - cut) / 0.2)
+    z = 1 + 0.07 * punch
+    ctx.translate(W / 2 + 14 * shake * math.sin(t * 90), H / 2 + 10 * shake * math.cos(t * 77)); ctx.scale(z, z); ctx.translate(-W / 2, -H / 2)
+    if cut is not None and t >= cut:
+        if Q['react']:
+            T_close(ctx, t, d, dict(Q, fear=max(Q.get('fear', 0), 0.8), mouth='o'), snap=t - cut)
+        else:
+            TEMPLATES[tpl](ctx, t, d, dict(Q, shot=Q['shotB']))
+    else:
+        TEMPLATES[tpl](ctx, t, d, Q)
+    ctx.restore()
+    if punch > 0:
+        rgba(ctx, (1, 1, 1), 0.22 * punch); ctx.paint()
+    if Q['danger']:
+        pulse = 0.5 + 0.5 * math.sin(t * 6)
+        v = cairo.RadialGradient(W / 2, H / 2, 380, W / 2, H / 2, 1150)
+        v.add_color_stop_rgba(0, 0.8, 0, 0, 0); v.add_color_stop_rgba(1, 0.8, 0.02, 0.05, 0.35 + 0.2 * pulse)
+        ctx.set_source(v); ctx.paint()
+    if key and t >= key[1] and tpl not in ('choice', 'fact', 'title'):
+        k = clamp((t - key[1]) / 0.18)
+        word = key[0].strip('.,?!').upper()
+        col = ACC if word.lower() in DANGER else AMB
+        ctx.save(); ctx.translate(W / 2, 330); ctx.rotate(-0.05 + 0.02 * math.sin(t * 5)); sc = 0.4 + 0.6 * eback(k)
+        ctx.scale(sc, sc)
+        label(ctx, word, 0, 0, 150, col, min(1.0, k * 2) * (1 - clamp((t - key[1] - 1.6) / 0.3)))
+        ctx.restore()
+    if Q.get('boat'):
+        left = max(0, 90 - (Q['start'] + t) * 6)
+        rr(ctx, W - 330, 40, 290, 110, 20); rgba(ctx, (0, 0, 0), 0.6); ctx.fill_preserve(); rgba(ctx, ACC, 0.6 + 0.4 * math.sin(t * 10)); ctx.set_line_width(4); ctx.stroke()
+        label(ctx, f"0:{int(left):02d}", W - 185, 95, 76, ACC)
     hud(ctx, t, Q)
     caption(ctx, t, Q['text'], 0.3, d - 0.15, y=930, size=74, chunk=4)
+    pr = (Q['start'] + t) / TOTAL
+    ctx.rectangle(0, H - 10, W, 10); rgba(ctx, (1, 1, 1), 0.15); ctx.fill()
+    ctx.rectangle(0, H - 10, W * pr, 10); rgba(ctx, ACC); ctx.fill()
 
 SCENES = build()
+TOTAL = sum(x[0] for x in SCENES)
 
 # =================================================================== drawing (needs cairo)
 if __name__ == "__main__":
@@ -201,9 +261,13 @@ if __name__ == "__main__":
         if Q.get('tarp') == 1:
             ctx.move_to(-200, -10); ctx.curve_to(-120, -300, 120, -300, 200, -10)
             fill_grad(ctx, [(0, (0.95, 0.55, 0.12)), (1, (0.7, 0.3, 0.05))], 0, -300, 0, 0, 0.92); ctx.fill()
-        stickman(ctx, 0, 0 + 150 * 0.62 - 10, 0.62, Q.get('pose', 'sit'), look=Q.get('look', (0, 0)), fear=Q.get('fear', 0),
+        pose = Q.get('pose', 'sit')
+        if pose == 'sit': pose = lerp_pose('sit', 'aim', 0.25 * (0.5 + 0.5 * math.sin(t * 1.7)))
+        if pose == 'wave': pose = lerp_pose('wave', 'aim', 0.5 + 0.5 * math.sin(t * 9))
+        lk = Q.get('look', (math.sin(t * 1.3), 0.2 * math.sin(t * 0.7)))
+        stickman(ctx, 0, 0 + 150 * 0.62 - 10, 0.62, pose, look=lk, fear=Q.get('fear', 0),
                  mouth=Q.get('mouth', 'flat'), blink=blink_at(t), sweat=Q.get('sweat', 0), t=t, shadow=False,
-                 rot=0)
+                 tilt=0.12 * math.sin(t * 1.9), emote=Q.get('emote'), shiver=1.0 if Q.get('pose') == 'hug' else 0.0)
         if Q.get('tarp') == 2:  # rain catch bowl
             ctx.move_to(-170, -150); ctx.curve_to(-90, -40, 90, -40, 170, -150)
             rgba(ctx, (0.95, 0.55, 0.12)); ctx.set_line_width(10); ctx.stroke()
@@ -252,6 +316,9 @@ if __name__ == "__main__":
         if sh == 'close': z, ox, oy = 1.7 - 0.08 * k, cx, cy - 60
         elif sh == 'low': z, ox, oy = 1.3, cx + 120 - 160 * k, cy - 20
         elif sh == 'mid': z, ox, oy = 1.15 + 0.08 * k, cx - 80 * k, cy
+        elif sh == 'dutch':
+            ctx.translate(W / 2, H / 2); ctx.rotate(0.07 - 0.03 * k); ctx.translate(-W / 2, -H / 2)
+            z, ox, oy = 1.35, cx + 40, cy - 40
         else: z, ox, oy = 1.0 + 0.05 * k, W / 2, H / 2
         ctx.translate(W / 2, H / 2); ctx.scale(z, z); ctx.translate(-ox, -oy)
 
@@ -313,15 +380,21 @@ if __name__ == "__main__":
                 ctx.move_to(x, y); ctx.line_to(x - 18, y + 60); rgba(ctx, (0.75, 0.8, 0.9), 0.35); ctx.set_line_width(2); ctx.stroke()
         ctx.restore()
 
-    def T_close(ctx, t, d, Q):
+    def T_close(ctx, t, d, Q, snap=None):
         tm = Q.get('time', 'day')
         ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(1.4, 1.4); ctx.translate(-W / 2, -H / 2 - 120)
         sky(ctx, t * 0.3, tm); sea_layers(ctx, t, tm, 16, 4)
         ctx.restore()
         rgba(ctx, (0, 0, 0), 0.35); ctx.paint()
         z = 2.4 + 0.15 * clamp(t / d)
-        stickman(ctx, W / 2, 600 + 360 * z, z, 'sit', look=(0.3 * math.sin(t * 0.8), 0.1), fear=Q.get('fear', 0),
-                 mouth=Q.get('mouth', 'flat'), blink=blink_at(t, 2.3), sweat=0.6 if tm == 'day' else 0, t=t, shadow=False)
+        sq = 0.0
+        if snap is not None:
+            z *= 1.25 - 0.25 * eo(clamp(snap / 0.25)); sq = 0.18 * max(0, 1 - snap / 0.2)
+        dart = (1.0 if math.sin(t * 2.1) > 0.3 else -0.8, 0.15 * math.sin(t * 3))
+        stickman(ctx, W / 2, 600 + 360 * z, z, 'sit', look=dart, fear=Q.get('fear', 0),
+                 mouth=Q.get('mouth', 'flat'), blink=blink_at(t, 2.3), sweat=0.6 if tm == 'day' else 0, t=t, shadow=False,
+                 tilt=0.1 * math.sin(t * 1.4), squash=sq, emote=Q.get('emote') if Q.get('emote') != '?' else '?',
+                 shiver=0.5 if Q.get('time') == 'night' else 0.0)
 
     def big_text(ctx, s, y, size, col, a=1.0, spacing=0.0):
         label(ctx, s, W / 2, y, size, col, a)

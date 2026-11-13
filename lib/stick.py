@@ -37,9 +37,10 @@ def lerp_pose(a, b, k):
     return out
 
 def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat', blink=0.0, rot=0.0, a=1.0,
-             phone=False, sweat=0.0, t=0.0, col=INK, shadow=True):
+             phone=False, sweat=0.0, t=0.0, col=INK, shadow=True, tilt=0.0, squash=0.0, emote=None, shiver=0.0):
     P = POSES[pose] if isinstance(pose, str) else pose
-    ctx.save(); ctx.translate(x, y + P.get('dy', 0) * s); ctx.rotate(rot); ctx.scale(s, s)
+    jx = shiver * 6 * math.sin(t * 70)
+    ctx.save(); ctx.translate(x + jx * s, y + P.get('dy', 0) * s); ctx.rotate(rot); ctx.scale(s * (1 + 0.5 * squash), s * (1 - squash))
     ctx.push_group()
     # ground shadow
     if shadow:
@@ -70,8 +71,9 @@ def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat',
         g = cairo.RadialGradient(pr[0], pr[1] - 30, 5, pr[0], pr[1] - 30, 120)
         g.add_color_stop_rgba(0, 0.4, 0.7, 1, 0.25); g.add_color_stop_rgba(1, 0.4, 0.7, 1, 0)
         ctx.set_source(g); ctx.paint()
-    # head
+    # head (own transform: tilt)
     hy = -360
+    ctx.save(); ctx.translate(0, hy + 50); ctx.rotate(tilt); ctx.translate(0, -hy - 50)
     g = cairo.RadialGradient(-20, hy - 25, 5, 0, hy, 72)
     g.add_color_stop_rgb(0, 1, 1, 1); g.add_color_stop_rgb(1, col[0] * 0.78, col[1] * 0.8, col[2] * 0.85)
     ctx.arc(0, hy, 70, 0, 6.3); ctx.set_source(g); ctx.fill()
@@ -108,6 +110,26 @@ def stickman(ctx, x, y, s=1.0, pose='idle', look=(0, 0), fear=0.0, mouth='flat',
             yy = sy + q * 40
             ctx.move_to(sx, yy - 14); ctx.curve_to(sx + 8, yy, sx + 8, yy + 8, sx, yy + 8); ctx.curve_to(sx - 8, yy + 8, sx - 8, yy, sx, yy - 14)
             rgba(ctx, (0.55, 0.8, 1.0), sweat * (1 - q)); ctx.fill()
+    if emote == 'tears':
+        for sx in (-1, 1):
+            q = (t * 1.2) % 1
+            ctx.move_to(sx * 25, hy + 12); ctx.line_to(sx * 32, hy + 30 + 60 * q)
+            rgba(ctx, (0.5, 0.8, 1.0), 0.8); ctx.set_line_width(8); ctx.stroke()
+    ctx.restore()
+    if emote in ('!', '?', '!!'):
+        pp = min(1.0, (t % 10) * 6)
+        ctx.save(); ctx.translate(95, hy - 120); ctx.rotate(0.2 * math.sin(t * 9)); ctx.scale(pp, pp)
+        ctx.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD); ctx.set_font_size(120)
+        ctx.move_to(-30, 40); ctx.text_path(emote)
+        rgba(ctx, (0, 0, 0), 0.9); ctx.set_line_width(14); ctx.stroke_preserve()
+        rgba(ctx, ACC if emote != '?' else AMB); ctx.fill()
+        ctx.restore()
+    if emote == 'shock':
+        for k in range(8):
+            an = -math.pi / 2 + (k - 3.5) * 0.28
+            r0 = 95 + 10 * math.sin(t * 20)
+            ctx.move_to(r0 * math.cos(an), hy + r0 * math.sin(an)); ctx.line_to((r0 + 45) * math.cos(an), hy + (r0 + 45) * math.sin(an))
+        rgba(ctx, AMB); ctx.set_line_width(7); ctx.stroke()
     ctx.pop_group_to_source(); ctx.paint_with_alpha(a)
     ctx.restore()
 

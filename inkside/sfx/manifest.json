@@ -352,6 +352,79 @@
    "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_53e7fa38bb.mp3?filename=freesound_community-marker-lineswav-14823.mp3",
    "page": "https://pixabay.com/sound-effects/14823/",
    "path": "marker/marker_lines.mp3"
+  },
+  "piano_1": {
+   "category": "piano",
+   "file": "alexaa221-horror-halloween-dark-piano-film-video-background-cinematic-257663.mp3",
+   "seconds": 240,
+   "url": "https://cdn.pixabay.com/download/audio/2024/10/30/audio_730944a1c7.mp3?filename=alexaa221-horror-halloween-dark-piano-film-video-background-cinematic-257663.mp3",
+   "page": "https://pixabay.com/music/solo-piano-horror-halloween-dark-piano-film-video-background-cinematic-257663/",
+   "path": "piano/horror_halloween_dark_piano.mp3",
+   "content_id": false
+  },
+  "piano_2": {
+   "category": "piano",
+   "file": "pianocafe_kumi-dark-piano-belladonna-474172.mp3",
+   "seconds": 121,
+   "url": "https://cdn.pixabay.com/download/audio/2026/01/26/audio_dcff32d28f.mp3?filename=pianocafe_kumi-dark-piano-belladonna-474172.mp3",
+   "page": "https://pixabay.com/music/solo-piano-dark-piano-belladonna-474172/",
+   "path": "piano/dark_piano_belladonna.mp3",
+   "content_id": false
+  },
+  "piano_3": {
+   "category": "piano",
+   "file": "pianocafe_kumi-dark-piano-mutual-harm-474170.mp3",
+   "seconds": 146,
+   "url": "https://cdn.pixabay.com/download/audio/2026/01/26/audio_3b232c59c5.mp3?filename=pianocafe_kumi-dark-piano-mutual-harm-474170.mp3",
+   "page": "https://pixabay.com/music/solo-piano-dark-piano-mutual-harm-474170/",
+   "path": "piano/dark_piano_mutual_harm.mp3",
+   "content_id": false
+  },
+  "piano_4": {
+   "category": "piano",
+   "file": "universfield-mysterious-gothic-piano-147342.mp3",
+   "seconds": 74,
+   "url": "https://cdn.pixabay.com/download/audio/2023/04/23/audio_4579610f25.mp3?filename=universfield-mysterious-gothic-piano-147342.mp3",
+   "page": "https://pixabay.com/music/horror-scene-mysterious-gothic-piano-147342/",
+   "path": "piano/mysterious_gothic_piano.mp3",
+   "content_id": false
+  },
+  "piano_5": {
+   "category": "piano",
+   "file": "universfield-tense-horror-piano-background-146536.mp3",
+   "seconds": 65,
+   "url": "https://cdn.pixabay.com/download/audio/2023/04/16/audio_dc6b677fdf.mp3?filename=universfield-tense-horror-piano-background-146536.mp3",
+   "page": "https://pixabay.com/music/horror-scene-tense-horror-piano-background-146536/",
+   "path": "piano/tense_horror_piano.mp3",
+   "content_id": false
+  },
+  "piano_6": {
+   "category": "piano",
+   "file": "universfield-dark-mystery-piano-161660.mp3",
+   "seconds": 60,
+   "url": "https://cdn.pixabay.com/download/audio/2023/08/11/audio_dc7e00a3c6.mp3?filename=universfield-dark-mystery-piano-161660.mp3",
+   "page": "https://pixabay.com/music/solo-piano-dark-mystery-piano-161660/",
+   "path": "piano/dark_mystery_piano.mp3",
+   "content_id": false
+  },
+  "piano_7": {
+   "category": "piano",
+   "file": "universfield-melancholic-halloween-piano-161524.mp3",
+   "seconds": 70,
+   "url": "https://cdn.pixabay.com/download/audio/2023/08/10/audio_0b422a7b4d.mp3?filename=universfield-melancholic-halloween-piano-161524.mp3",
+   "page": "https://pixabay.com/music/solo-piano-melancholic-halloween-piano-161524/",
+   "path": "piano/melancholic_halloween_piano.mp3",
+   "content_id": false
+  },
+  "piano_8": {
+   "category": "piano",
+   "file": "51604229-haunted-piano-halloween-430085.mp3",
+   "seconds": 169,
+   "url": "https://cdn.pixabay.com/download/audio/2025/11/02/audio_9e923a696a.mp3?filename=51604229-haunted-piano-halloween-430085.mp3",
+   "page": "https://pixabay.com/music/solo-piano-haunted-piano-halloween-430085/",
+   "path": "piano/haunted_piano_halloween.mp3",
+   "content_id": false
   }
- }
+ },
+ "note_music": "piano_* tracks were checked on Pixabay: NOT 'Content ID Registered' (no YouTube claims)."
 }

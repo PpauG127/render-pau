@@ -1,0 +1,65 @@
+name: render-inkside
+on:
+  workflow_dispatch:
+    inputs:
+      story: {description: "Story folder in inkside/stories", default: "slenderman"}
+      chunks: {description: "Parallel machines", default: "8"}
+permissions:
+  contents: write
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip, cache-dependency-path: inkside/requirements.txt}
+      - run: pip install -q -r inkside/requirements.txt
+      - id: m
+        working-directory: inkside
+        run: |
+          python - "${{ inputs.story }}" "${{ inputs.chunks }}" >> "$GITHUB_OUTPUT" <<'P'
+          import sys, json; sys.path.insert(0, "engine")
+          import story; s, _ = story.load(sys.argv[1]); s.build()
+          n = int(sys.argv[2]); T = s.TOTAL; step = T / n
+          inc = [{"i": i, "t0": round(i*step, 3), "t1": round(T if i == n-1 else (i+1)*step, 3)} for i in range(n)]
+          print("matrix=" + json.dumps({"include": inc}))
+          P
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip, cache-dependency-path: inkside/requirements.txt}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+      - run: pip install -q -r inkside/requirements.txt
+      - working-directory: inkside
+        run: python engine/render.py "${{ inputs.story }}" ${{ matrix.t0 }} ${{ matrix.t1 }} "part_$(printf %02d ${{ matrix.i }}).mp4"
+      - uses: actions/upload-artifact@v4
+        with: {name: "ink-part-${{ matrix.i }}", path: inkside/part_*.mp4, retention-days: 1}
+  join:
+    needs: render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip, cache-dependency-path: inkside/requirements.txt}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+      - run: pip install -q -r inkside/requirements.txt
+      - uses: actions/download-artifact@v4
+        with: {pattern: "ink-part-*", path: inkside/parts, merge-multiple: true}
+      - name: Download sound effects (Pixabay, not stored in repo)
+        run: python inkside/sfx/fetch_sfx.py
+      - working-directory: inkside
+        run: |
+          ls parts/part_*.mp4 | sort | sed "s/.*/file '&'/" > list.txt
+          ffmpeg -y -v error -f concat -safe 0 -i list.txt -c copy video.mp4
+          python engine/mix.py "${{ inputs.story }}" video.mp4 "${{ inputs.story }}.mp4"
+      - name: Publish to Releases
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: gh release create "inkside-${{ inputs.story }}-${{ github.run_number }}" "inkside/${{ inputs.story }}.mp4" --title "Inkside · ${{ inputs.story }} #${{ github.run_number }}" --notes "Inkside Stories render"

@@ -1,0 +1,313 @@
+{
+ "license": "Pixabay Content License (https://pixabay.com/service/license-summary/). Files are NOT stored in this repo; they are downloaded at render time.",
+ "sounds": {
+  "footsteps_1": {
+   "category": "footsteps",
+   "file": "freesound_community-going-on-a-forest-road-gravel-and-grass-6404.mp3",
+   "seconds": 31,
+   "url": "https://cdn.pixabay.com/download/audio/2021/08/04/audio_ad180669e0.mp3?filename=freesound_community-going-on-a-forest-road-gravel-and-grass-6404.mp3",
+   "page": "https://pixabay.com/sound-effects/6404/"
+  },
+  "footsteps_2": {
+   "category": "footsteps",
+   "file": "freesound_community-footsteps-in-forest-83834.mp3",
+   "seconds": 5,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/15/audio_df066d3095.mp3?filename=freesound_community-footsteps-in-forest-83834.mp3",
+   "page": "https://pixabay.com/sound-effects/83834/"
+  },
+  "footsteps_3": {
+   "category": "footsteps",
+   "file": "freesound_community-footsteps-forest-26170.mp3",
+   "seconds": 48,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/09/audio_ea66d526c0.mp3?filename=freesound_community-footsteps-forest-26170.mp3",
+   "page": "https://pixabay.com/sound-effects/26170/"
+  },
+  "running_1": {
+   "category": "running",
+   "file": "km007-chase-running-9109.mp3",
+   "seconds": 6,
+   "url": "https://cdn.pixabay.com/download/audio/2021/10/06/audio_408a28445f.mp3?filename=km007-chase-running-9109.mp3",
+   "page": "https://pixabay.com/sound-effects/9109/"
+  },
+  "running_2": {
+   "category": "running",
+   "file": "freesound_community-footsteps-running-away-fading-2-103763.mp3",
+   "seconds": 3,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/24/audio_57ae9d55fc.mp3?filename=freesound_community-footsteps-running-away-fading-2-103763.mp3",
+   "page": "https://pixabay.com/sound-effects/103763/"
+  },
+  "scream_1": {
+   "category": "scream",
+   "file": "jusatti890-scream-horror-sfx-490908.mp3",
+   "seconds": 18,
+   "url": "https://cdn.pixabay.com/download/audio/2026/02/25/audio_d5f6c9cdde.mp3?filename=jusatti890-scream-horror-sfx-490908.mp3",
+   "page": "https://pixabay.com/sound-effects/490908/"
+  },
+  "scream_2": {
+   "category": "scream",
+   "file": "jusatti890-scream-horror-sfx-490899.mp3",
+   "seconds": 18,
+   "url": "https://cdn.pixabay.com/download/audio/2026/02/25/audio_b57b760a8b.mp3?filename=jusatti890-scream-horror-sfx-490899.mp3",
+   "page": "https://pixabay.com/sound-effects/490899/"
+  },
+  "scream_3": {
+   "category": "scream",
+   "file": "jusatti890-scream-horror-sfx-490916.mp3",
+   "seconds": 30,
+   "url": "https://cdn.pixabay.com/download/audio/2026/02/25/audio_cca99c9c64.mp3?filename=jusatti890-scream-horror-sfx-490916.mp3",
+   "page": "https://pixabay.com/sound-effects/490916/"
+  },
+  "whisper_1": {
+   "category": "whisper",
+   "file": "dragon-studio-creepy-whisper-472369.mp3",
+   "seconds": 3,
+   "url": "https://cdn.pixabay.com/download/audio/2026/01/24/audio_bc9df40b3c.mp3?filename=dragon-studio-creepy-whisper-472369.mp3",
+   "page": "https://pixabay.com/sound-effects/472369/"
+  },
+  "whisper_2": {
+   "category": "whisper",
+   "file": "fadingembersaudio-creepy-female-ghost-whispers-430175.mp3",
+   "seconds": 16,
+   "url": "https://cdn.pixabay.com/download/audio/2025/11/02/audio_658dc51277.mp3?filename=fadingembersaudio-creepy-female-ghost-whispers-430175.mp3",
+   "page": "https://pixabay.com/sound-effects/430175/"
+  },
+  "whisper_3": {
+   "category": "whisper",
+   "file": "dragon-studio-creepy-ghost-whisper-410564.mp3",
+   "seconds": 2,
+   "url": "https://cdn.pixabay.com/download/audio/2025/09/25/audio_038e94cb54.mp3?filename=dragon-studio-creepy-ghost-whisper-410564.mp3",
+   "page": "https://pixabay.com/sound-effects/410564/"
+  },
+  "whoosh_1": {
+   "category": "whoosh",
+   "file": "freesound_community-whisper-trail-2ogg-14429.mp3",
+   "seconds": 6,
+   "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_194537740e.mp3?filename=freesound_community-whisper-trail-2ogg-14429.mp3",
+   "page": "https://pixabay.com/sound-effects/14429/"
+  },
+  "whoosh_2": {
+   "category": "whoosh",
+   "file": "freesound_community-whoosh-noise-45477.mp3",
+   "seconds": 4,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/10/audio_e72610e9be.mp3?filename=freesound_community-whoosh-noise-45477.mp3",
+   "page": "https://pixabay.com/sound-effects/45477/"
+  },
+  "shadow_1": {
+   "category": "shadow",
+   "file": "tanweraman-horror-entry-sound-reverb-318472.mp3",
+   "seconds": 5,
+   "url": "https://cdn.pixabay.com/download/audio/2025/03/25/audio_235957987f.mp3?filename=tanweraman-horror-entry-sound-reverb-318472.mp3",
+   "page": "https://pixabay.com/sound-effects/318472/"
+  },
+  "shadow_2": {
+   "category": "shadow",
+   "file": "fronbondi_skegs-sfx-spooky-cinematic-riser-sound-effect-453133.mp3",
+   "seconds": 4,
+   "url": "https://cdn.pixabay.com/download/audio/2025/12/17/audio_493ffdc308.mp3?filename=fronbondi_skegs-sfx-spooky-cinematic-riser-sound-effect-453133.mp3",
+   "page": "https://pixabay.com/sound-effects/453133/"
+  },
+  "drone_1": {
+   "category": "drone",
+   "file": "soundreality-deep-drone-588746.mp3",
+   "seconds": 44,
+   "url": "https://cdn.pixabay.com/download/audio/2026/08/19/audio_c08e9b1ec5.mp3?filename=soundreality-deep-drone-588746.mp3",
+   "page": "https://pixabay.com/sound-effects/588746/"
+  },
+  "drone_2": {
+   "category": "drone",
+   "file": "soundreality-drone-texture-619960.mp3",
+   "seconds": 38,
+   "url": "https://cdn.pixabay.com/download/audio/2026/10/13/audio_e328cc281b.mp3?filename=soundreality-drone-texture-619960.mp3",
+   "page": "https://pixabay.com/sound-effects/619960/"
+  },
+  "drone_3": {
+   "category": "drone",
+   "file": "soundreality-atlantic-drone-589644.mp3",
+   "seconds": 44,
+   "url": "https://cdn.pixabay.com/download/audio/2026/08/20/audio_70f89e3cc7.mp3?filename=soundreality-atlantic-drone-589644.mp3",
+   "page": "https://pixabay.com/sound-effects/589644/"
+  },
+  "music_1": {
+   "category": "music",
+   "file": "universfield-horror-background-atmosphere-156462.mp3",
+   "seconds": 65,
+   "url": "https://cdn.pixabay.com/download/audio/2023/07/02/audio_74c64867ff.mp3?filename=universfield-horror-background-atmosphere-156462.mp3",
+   "page": "https://pixabay.com/sound-effects/156462/"
+  },
+  "music_2": {
+   "category": "music",
+   "file": "universfield-horror-background-atmosphere-025-499631.mp3",
+   "seconds": 162,
+   "url": "https://cdn.pixabay.com/download/audio/2026/03/10/audio_c3c11522db.mp3?filename=universfield-horror-background-atmosphere-025-499631.mp3",
+   "page": "https://pixabay.com/sound-effects/499631/"
+  },
+  "music_3": {
+   "category": "music",
+   "file": "dragon-studio-horror-background-music-443137.mp3",
+   "seconds": 14,
+   "url": "https://cdn.pixabay.com/download/audio/2025/11/26/audio_5ccaae63d3.mp3?filename=dragon-studio-horror-background-music-443137.mp3",
+   "page": "https://pixabay.com/sound-effects/443137/"
+  },
+  "music_4": {
+   "category": "music",
+   "file": "charliekirkthe2ndthe3rd-horror-background-sfx-music-box-477369.mp3",
+   "seconds": 13,
+   "url": "https://cdn.pixabay.com/download/audio/2026/01/31/audio_67dc76d296.mp3?filename=charliekirkthe2ndthe3rd-horror-background-sfx-music-box-477369.mp3",
+   "page": "https://pixabay.com/sound-effects/477369/"
+  },
+  "heartbeat_1": {
+   "category": "heartbeat",
+   "file": "kauasilbershlachparodes-heartbeat-sound-493999.mp3",
+   "seconds": 32,
+   "url": "https://cdn.pixabay.com/download/audio/2026/03/02/audio_bc94adab01.mp3?filename=kauasilbershlachparodes-heartbeat-sound-493999.mp3",
+   "page": "https://pixabay.com/sound-effects/493999/"
+  },
+  "heartbeat_2": {
+   "category": "heartbeat",
+   "file": "u_akyu645azf-heartbeat-sound-effects-for-you-122458.mp3",
+   "seconds": 11,
+   "url": "https://cdn.pixabay.com/download/audio/2022/10/11/audio_31e14bbc10.mp3?filename=u_akyu645azf-heartbeat-sound-effects-for-you-122458.mp3",
+   "page": "https://pixabay.com/sound-effects/122458/"
+  },
+  "creak_1": {
+   "category": "creak",
+   "file": "freesound_community-door-creak-38423.mp3",
+   "seconds": 3,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/10/audio_52f31a76e7.mp3?filename=freesound_community-door-creak-38423.mp3",
+   "page": "https://pixabay.com/sound-effects/38423/"
+  },
+  "creak_2": {
+   "category": "creak",
+   "file": "dragon-studio-creaky-old-door-472357.mp3",
+   "seconds": 1,
+   "url": "https://cdn.pixabay.com/download/audio/2026/01/24/audio_3c0d38c9c5.mp3?filename=dragon-studio-creaky-old-door-472357.mp3",
+   "page": "https://pixabay.com/sound-effects/472357/"
+  },
+  "wind_1": {
+   "category": "wind",
+   "file": "eryliaa-forest-wind-with-crickets-and-cuckoo-355613.mp3",
+   "seconds": 70,
+   "url": "https://cdn.pixabay.com/download/audio/2025/06/06/audio_b4ffb37ac1.mp3?filename=eryliaa-forest-wind-with-crickets-and-cuckoo-355613.mp3",
+   "page": "https://pixabay.com/sound-effects/355613/"
+  },
+  "wind_2": {
+   "category": "wind",
+   "file": "alex_jauk-windy-night-forest-ambience-211715.mp3",
+   "seconds": 65,
+   "url": "https://cdn.pixabay.com/download/audio/2024/05/24/audio_58c71c8d03.mp3?filename=alex_jauk-windy-night-forest-ambience-211715.mp3",
+   "page": "https://pixabay.com/sound-effects/211715/"
+  },
+  "crickets_1": {
+   "category": "crickets",
+   "file": "blender_abstract-crickets-395138.mp3",
+   "seconds": 9,
+   "url": "https://cdn.pixabay.com/download/audio/2025/08/26/audio_b91b1cb269.mp3?filename=blender_abstract-crickets-395138.mp3",
+   "page": "https://pixabay.com/sound-effects/395138/"
+  },
+  "siren_1": {
+   "category": "siren",
+   "file": "dragon-studio-police-siren-397963.mp3",
+   "seconds": 5,
+   "url": "https://cdn.pixabay.com/download/audio/2025/09/01/audio_1b51f0cb48.mp3?filename=dragon-studio-police-siren-397963.mp3",
+   "page": "https://pixabay.com/sound-effects/397963/"
+  },
+  "siren_2": {
+   "category": "siren",
+   "file": "placidplace-police-siren-21498.mp3",
+   "seconds": 71,
+   "url": "https://cdn.pixabay.com/download/audio/2022/02/23/audio_c75a95568e.mp3?filename=placidplace-police-siren-21498.mp3",
+   "page": "https://pixabay.com/sound-effects/21498/"
+  },
+  "clock_1": {
+   "category": "clock",
+   "file": "dragon-studio-clock-ticking-sfx-467486.mp3",
+   "seconds": 8,
+   "url": "https://cdn.pixabay.com/download/audio/2026/01/16/audio_71592b7f17.mp3?filename=dragon-studio-clock-ticking-sfx-467486.mp3",
+   "page": "https://pixabay.com/sound-effects/467486/"
+  },
+  "hit_1": {
+   "category": "hit",
+   "file": "universfield-horror-impact-hit-567238.mp3",
+   "seconds": 4,
+   "url": "https://cdn.pixabay.com/download/audio/2026/07/14/audio_b7b3f19573.mp3?filename=universfield-horror-impact-hit-567238.mp3",
+   "page": "https://pixabay.com/sound-effects/567238/"
+  },
+  "hit_2": {
+   "category": "hit",
+   "file": "universfield-horror-hit-443980.mp3",
+   "seconds": 3,
+   "url": "https://cdn.pixabay.com/download/audio/2025/11/28/audio_1d878bbfe5.mp3?filename=universfield-horror-hit-443980.mp3",
+   "page": "https://pixabay.com/sound-effects/443980/"
+  },
+  "hit_3": {
+   "category": "hit",
+   "file": "soundreality-cinematic-hit-sfx-615728.mp3",
+   "seconds": 9,
+   "url": "https://cdn.pixabay.com/download/audio/2026/10/05/audio_e30adf2829.mp3?filename=soundreality-cinematic-hit-sfx-615728.mp3",
+   "page": "https://pixabay.com/sound-effects/615728/"
+  },
+  "riser_1": {
+   "category": "riser",
+   "file": "creatorshome-riser-horror-330827.mp3",
+   "seconds": 2,
+   "url": "https://cdn.pixabay.com/download/audio/2025/04/22/audio_618a91ea70.mp3?filename=creatorshome-riser-horror-330827.mp3",
+   "page": "https://pixabay.com/sound-effects/330827/"
+  },
+  "riser_2": {
+   "category": "riser",
+   "file": "universfield-horror-suspense-riser-02-636237.mp3",
+   "seconds": 7,
+   "url": "https://cdn.pixabay.com/download/audio/2026/11/13/audio_044978c869.mp3?filename=universfield-horror-suspense-riser-02-636237.mp3",
+   "page": "https://pixabay.com/sound-effects/636237/"
+  },
+  "breath_1": {
+   "category": "breath",
+   "file": "lexieva-heavy-girl-breathing-149496.mp3",
+   "seconds": 13,
+   "url": "https://cdn.pixabay.com/download/audio/2023/05/11/audio_a5aa3eab74.mp3?filename=lexieva-heavy-girl-breathing-149496.mp3",
+   "page": "https://pixabay.com/sound-effects/149496/"
+  },
+  "breath_2": {
+   "category": "breath",
+   "file": "freesound_community-075363_heavy-breath-43378.mp3",
+   "seconds": 3,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/10/audio_b7437c37af.mp3?filename=freesound_community-075363_heavy-breath-43378.mp3",
+   "page": "https://pixabay.com/sound-effects/43378/"
+  },
+  "music_5": {
+   "category": "music",
+   "file": "universfield-horror-background-atmosphere-09-219111.mp3",
+   "seconds": 63,
+   "url": "https://cdn.pixabay.com/download/audio/2024/06/23/audio_768870adf0.mp3?filename=universfield-horror-background-atmosphere-09-219111.mp3",
+   "page": "https://pixabay.com/sound-effects/219111/"
+  },
+  "drone_4": {
+   "category": "drone",
+   "file": "dragon-studio-creepy-industrial-sounds-ambience-482892.mp3",
+   "seconds": 416,
+   "url": "https://cdn.pixabay.com/download/audio/2026/02/10/audio_d7a79cac12.mp3?filename=dragon-studio-creepy-industrial-sounds-ambience-482892.mp3",
+   "page": "https://pixabay.com/sound-effects/482892/"
+  },
+  "eraser_1": {
+   "category": "eraser",
+   "file": "freesound_community-erasing-28589.mp3",
+   "seconds": 18,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/09/audio_6764a81c10.mp3?filename=freesound_community-erasing-28589.mp3",
+   "page": "https://pixabay.com/sound-effects/28589/"
+  },
+  "marker_1": {
+   "category": "marker",
+   "file": "freesound_community-marker-circle-6789.mp3",
+   "seconds": 7,
+   "url": "https://cdn.pixabay.com/download/audio/2021/08/09/audio_e343dc1755.mp3?filename=freesound_community-marker-circle-6789.mp3",
+   "page": "https://pixabay.com/sound-effects/6789/"
+  },
+  "marker_2": {
+   "category": "marker",
+   "file": "freesound_community-marker-lineswav-14823.mp3",
+   "seconds": 11,
+   "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_53e7fa38bb.mp3?filename=freesound_community-marker-lineswav-14823.mp3",
+   "page": "https://pixabay.com/sound-effects/14823/"
+  }
+ }
+}

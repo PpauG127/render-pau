@@ -1,0 +1,18 @@
+name: sfx-pack
+on: workflow_dispatch
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python inkside/sfx/fetch_sfx.py
+      - run: |
+          python - <<'P'
+          import json, os, shutil
+          m = json.load(open("inkside/sfx/manifest.json"))["sounds"]
+          for k, s in m.items():
+              d = os.path.join("pack", s["category"]); os.makedirs(d, exist_ok=True)
+              shutil.copy(f"inkside/sfx/cache/{k}.mp3", os.path.join(d, s["file"]))
+          P
+      - uses: actions/upload-artifact@v4
+        with: {name: sfx, path: pack/, retention-days: 1}

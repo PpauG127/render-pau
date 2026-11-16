@@ -54,7 +54,7 @@ jobs:
       - run: pip install -q -r inkside/requirements.txt
       - uses: actions/download-artifact@v4
         with: {pattern: "ink-part-*", path: inkside/parts, merge-multiple: true}
-      - name: Download sound effects (Pixabay, not stored in repo)
+      - name: Sound effects (in repo; fills in any missing)
         run: python inkside/sfx/fetch_sfx.py
       - working-directory: inkside
         run: |

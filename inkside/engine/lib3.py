@@ -340,8 +340,8 @@ def search_bar(text):
     return [ln("M-480 -60 L480 -60 Q540 -60 540 0 Q540 60 480 60 L-480 60 Q-540 60 -540 0 Q-540 -60 -480 -60 Z", 7),
             ln(circle(-460, -6, 24), 6), ln("M-443 11 L-420 34", 8), T(text, -380, 22, 70, "brush", align="left")]
 
-def comment_box(lines):
-    e = [ln("M-440 -80 L440 -80 L440 380 L-440 380 Z", 7), T("WHO IS TO BLAME?", 0, -6, 70, "marker", RED)]
+def comment_box(lines, title="WHO IS TO BLAME?"):
+    e = [ln("M-440 -80 L440 -80 L440 380 L-440 380 Z", 7), T(title, 0, -6, 70, "marker", RED)]
     for i, l in enumerate(lines):
         y = 80 + i * 100
         e += [ln(f"M-330 {y} L-280 {y} L-280 {y+50} L-330 {y+50} Z", 5), T(l, -240, y + 44, 64, "brush", align="left")]

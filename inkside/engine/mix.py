@@ -43,7 +43,7 @@ def norm(x):
 
 sc = scenes.build()
 total = scenes.TOTAL
-N = int(total * SR) + SR
+N = int(getattr(scenes, "AUDIO_TOTAL", total) * SR) + SR
 mix = np.zeros(N, np.float32)
 
 # --- voice
@@ -69,14 +69,14 @@ if marks:
         src = rnd.choice(marks); L = int(d * SR)
         if L >= len(src): L = len(src) - 1
         s0 = rnd.randint(0, max(0, len(src) - L - 1))
-        put(mix, fade(src[s0:s0 + L], 0.02, 0.04), e.ts, 0.11)
+        put(mix, fade(src[s0:s0 + L], 0.02, 0.04), e.ts, getattr(scenes, "MARKER_GAIN", 0.11))
 # --- eraser on every scene change
 er = sfx("eraser_1")
 if er is not None:
     er = norm(er)
     for s in sc[1:]:
         L = int(engine.PAN * SR); s0 = rnd.randint(0, max(0, len(er) - L - 1))
-        put(mix, fade(er[s0:s0 + L], 0.08, 0.25), s.t0, 0.22)
+        put(mix, fade(er[s0:s0 + L], 0.08, 0.25), s.t0, getattr(scenes, "ERASER_GAIN", 0.22))
 
 # --- music + ambience bed, looped, ducked under the voice
 def bed(key, gain):
@@ -90,8 +90,8 @@ def bed(key, gain):
         out[i:i + len(seg)] += seg; i += max(1, len(x) - xf)
     out[: 2 * SR] *= np.linspace(0, 1, 2 * SR); out[-3 * SR:] *= np.linspace(1, 0, 3 * SR)
     mix[:] += out * duck * gain
-bed(getattr(scenes, "MUSIC", "music_2"), 0.10)
-if getattr(scenes, "AMBIENCE", None): bed(scenes.AMBIENCE, 0.05)
+bed(getattr(scenes, "MUSIC", "music_2"), getattr(scenes, "MUSIC_GAIN", 0.10))
+if getattr(scenes, "AMBIENCE", None): bed(scenes.AMBIENCE, getattr(scenes, "AMBIENCE_GAIN", 0.05))
 
 # --- story cues: (time, sound key, gain, max seconds)
 for t, key, gain, mx in (scenes.CUES() if callable(getattr(scenes, "CUES", None)) else []):

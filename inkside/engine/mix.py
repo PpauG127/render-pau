@@ -12,7 +12,9 @@ SR = 44100
 scenes, STORY = story.load(sys.argv[1])
 import engine
 VID, OUT = sys.argv[2], sys.argv[3]
-SFX = os.path.join(engine.ROOT, "sfx", "cache")
+SFX = os.path.join(engine.ROOT, "sfx")
+import json
+_MAN = json.load(open(os.path.join(SFX, "manifest.json")))["sounds"]
 
 def load(path, mono=True):
     if not path or not os.path.exists(path): return None
@@ -20,7 +22,7 @@ def load(path, mono=True):
                          capture_output=True).stdout
     return np.frombuffer(raw, np.int16).astype(np.float32) / 32768.0
 
-def sfx(key): return load(os.path.join(SFX, key + ".mp3"))
+def sfx(key): return load(os.path.join(SFX, _MAN[key]["path"])) if key in _MAN else None
 
 def fade(x, a=0.03, b=0.08):
     x = x.copy(); na, nb = min(len(x), int(a * SR)), min(len(x), int(b * SR))
@@ -107,4 +109,4 @@ subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", VID, "-i", wav, "-filter_co
                 "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-ar", "48000", "-b:a", "192k", "-shortest", OUT],
                check=True)
 os.remove(wav)
-print("mixed ->", OUT, "| sfx found:", len([f for f in os.listdir(SFX)]) if os.path.isdir(SFX) else 0)
+print("mixed ->", OUT, "| sfx found:", sum(os.path.exists(os.path.join(SFX, v["path"])) for v in _MAN.values()))

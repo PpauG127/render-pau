@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12", cache: pip, cache-dependency-path: inkside/requirements.txt}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq libegl1 libgl1 libfontconfig1 >/dev/null
       - run: pip install -q -r inkside/requirements.txt
       - id: m
         working-directory: inkside
@@ -36,7 +37,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12", cache: pip, cache-dependency-path: inkside/requirements.txt}
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libfontconfig1 >/dev/null
       - run: pip install -q -r inkside/requirements.txt
       - working-directory: inkside
         run: python engine/render.py "${{ inputs.story }}" ${{ matrix.t0 }} ${{ matrix.t1 }} "part_$(printf %02d ${{ matrix.i }}).mp4"
@@ -49,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12", cache: pip, cache-dependency-path: inkside/requirements.txt}
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libegl1 libgl1 libfontconfig1 >/dev/null
       - run: pip install -q -r inkside/requirements.txt
       - uses: actions/download-artifact@v4
         with: {pattern: "ink-part-*", path: inkside/parts, merge-multiple: true}

@@ -63,4 +63,5 @@ jobs:
           python engine/mix.py "${{ inputs.story }}" video.mp4 "${{ inputs.story }}.mp4"
       - name: Publish to Releases
         env: {GH_TOKEN: "${{ github.token }}"}
-        run: gh release create "inkside-${{ inputs.story }}-${{ github.run_number }}" "inkside/${{ inputs.story }}.mp4" --title "Inkside · ${{ inputs.story }} #${{ github.run_number }}" --notes "Inkside Stories render"
+        run: |
+          gh release create "inkside-${{ inputs.story }}-${{ github.run_number }}" "inkside/${{ inputs.story }}.mp4" --title "Inkside - ${{ inputs.story }} (run ${{ github.run_number }})" --notes "Inkside Stories render"

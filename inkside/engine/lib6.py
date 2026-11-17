@@ -250,3 +250,11 @@ def postit(photo, caption, x, y, w=430, rot=-4, seed=1):
     e = IMG(postit_img(photo, caption, w, seed), x, y, 1.0, rot)
     e.pop = True
     return [e]
+
+
+def fly(els, vx=30, vy=-4, bob=6):
+    """mark a drawing so it drifts (flies) after it is drawn."""
+    g = {"v": (vx, vy, bob)}
+    els = flat(els)
+    for e in els: e.mv = g
+    return els

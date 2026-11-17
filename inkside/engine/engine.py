@@ -195,6 +195,7 @@ class El:
             sc = math.hypot(m.getScaleX(), m.getSkewY())
             e = El("stroke", p, self.color, self.width * sc) if self.kind == "stroke" else El("fill", p, self.color)
         e.zk = self.zk
+        if "mv" in self.__dict__: e.mv = self.mv
         return e
 
 def IMG(img, x, y, scale=1.0, rot=0.0):
@@ -328,7 +329,7 @@ class Beat:
         self.t, self.els, self.dur, self.speed = t, flat(els), dur, speed
 
 class Scene:
-    def __init__(self, t0, beats, zoom=0.05):
+    def __init__(self, t0, beats, zoom=0.0):
         self.t0, self.beats, self.zoom = t0, sorted(beats, key=lambda b: b.t), zoom
         self.t1 = None
 
@@ -496,74 +497,90 @@ def fill_streaks(c, e):
                                  Style=skia.Paint.kStroke_Style, StrokeWidth=18, StrokeCap=skia.Paint.kRound_Cap))
     c.restore()
 
+def _mv_off(sc, mv, t):
+    """drift for drawings that 'fly' once they are fully drawn (planes)."""
+    ends = sc.__dict__.setdefault("_mv_end", {})
+    if id(mv) not in ends:
+        ends[id(mv)] = max(x.t1 for b in sc.beats for x in b.els if getattr(x, "mv", None) is mv)
+    u = max(0.0, t - ends[id(mv)])
+    d = u - (1 - math.exp(-u * 1.2)) / 1.2                     # eases in, then constant speed
+    vx, vy, bob = mv["v"]
+    return vx * d, vy * d + bob * math.sin(u * 2.2) * min(1, u)
+
 def draw_scene(c, sc, t):
     """Draw scene state at time t; return hand tip or None."""
     tip = None
     els = sorted((e for b in sc.beats for e in b.els), key=lambda e: e.zk)
     for e in els:
         if t < e.t0: continue
-        if e.kind == "image":
-            if getattr(e, "pop", False):   # smooth pop: grows from 70% with a soft overshoot, settles its tilt
-                u = min(1, (t - e.t0) / 0.55); c1 = 1.25
-                back = 1 + (c1 + 1) * (u - 1) ** 3 + c1 * (u - 1) ** 2
-                sc_ = e.scale * (0.7 + 0.3 * back); k = min(1, u / 0.22)
-                rot = e.rot + 6 * (1 - ease(u))
-            else:
-                k = ease(min(1, (t - e.t0) / 0.45))
-                sc_ = e.scale * (1.12 - 0.12 * k); rot = e.rot * k + 3 * (1 - k)
-            c.save(); c.translate(e.x, e.y); c.rotate(rot); c.scale(sc_, sc_)
-            c.drawImage(e.img, -e.img.width() / 2, -e.img.height() / 2, skia.SamplingOptions(skia.FilterMode.kLinear), paint=skia.Paint(Alphaf=k))
-            c.restore(); continue
-        if t < e.ts:
-            k = ease((t - e.t0) / max(1e-6, e.ts - e.t0))
-            (ax, ay), (bx, by) = e.prev_pt, e.start_pt
-            tip = (ax + (bx - ax) * k, ay + (by - ay) * k - 25 * math.sin(math.pi * k)) + hand_of(e)
-            continue
-        p = min(1, (t - e.ts) / max(1e-6, e.t1 - e.ts))
-        p = 0.65 * p + 0.35 * ease(p)
-        if e.kind == "fill":
-            paint = skia.Paint(Color=e.color, AntiAlias=True)
-            big = e.length > 0
-            dark = is_dark(e.color)
-            if p >= 1:
-                if dark: marker_fill(c, e)
+        mv = getattr(e, "mv", None)
+        if mv is not None:
+            c.save(); c.translate(*_mv_off(sc, mv, t))
+        try:
+            if e.kind == "image":
+                if getattr(e, "pop", False):   # smooth pop: grows from 70% with a soft overshoot, settles its tilt
+                    u = min(1, (t - e.t0) / 0.55); c1 = 1.25
+                    back = 1 + (c1 + 1) * (u - 1) ** 3 + c1 * (u - 1) ** 2
+                    sc_ = e.scale * (0.7 + 0.3 * back); k = min(1, u / 0.22)
+                    rot = e.rot + 6 * (1 - ease(u))
                 else:
-                    c.drawPath(e.path, paint)
-                    if big: fill_streaks(c, e)
-            else:
-                c.saveLayer()
-                if dark: marker_fill(c, e)
+                    k = ease(min(1, (t - e.t0) / 0.45))
+                    sc_ = e.scale * (1.12 - 0.12 * k); rot = e.rot * k + 3 * (1 - k)
+                c.save(); c.translate(e.x, e.y); c.rotate(rot); c.scale(sc_, sc_)
+                c.drawImage(e.img, -e.img.width() / 2, -e.img.height() / 2, skia.SamplingOptions(skia.FilterMode.kLinear), paint=skia.Paint(Alphaf=k))
+                c.restore(); continue
+            if t < e.ts:
+                k = ease((t - e.t0) / max(1e-6, e.ts - e.t0))
+                (ax, ay), (bx, by) = e.prev_pt, e.start_pt
+                tip = (ax + (bx - ax) * k, ay + (by - ay) * k - 25 * math.sin(math.pi * k)) + hand_of(e)
+                continue
+            p = min(1, (t - e.ts) / max(1e-6, e.t1 - e.ts))
+            p = 0.65 * p + 0.35 * ease(p)
+            if e.kind == "fill":
+                paint = skia.Paint(Color=e.color, AntiAlias=True)
+                big = e.length > 0
+                dark = is_dark(e.color)
+                if p >= 1:
+                    if dark: marker_fill(c, e)
+                    else:
+                        c.drawPath(e.path, paint)
+                        if big: fill_streaks(c, e)
                 else:
-                    c.drawPath(e.path, paint)
-                    if big: fill_streaks(c, e)
-                seg, tp = partial(e.zig, e.zlen * p)
-                c.drawPath(seg, skia.Paint(AntiAlias=True, Style=skia.Paint.kStroke_Style, StrokeWidth=30,
-                                           StrokeCap=skia.Paint.kRound_Cap, StrokeJoin=skia.Paint.kRound_Join,
-                                           BlendMode=skia.BlendMode.kDstIn, Color=WHITE))
-                c.restore()
-                if tp:
-                    # follow the colouring with a calmer, averaged hand path
-                    d0 = e.zlen * p
-                    pa = partial(e.zig, max(0.01, d0 - 70))[1] or tp; pb = partial(e.zig, min(e.zlen, d0 + 70))[1] or tp
-                    tip = ((pa[0] + tp[0] + pb[0]) / 3, (pa[1] + tp[1] + pb[1]) / 3) + hand_of(e)
-        elif e.kind == "stroke":
-            if p >= 1: draw_marker(c, e.path, e)
+                    c.saveLayer()
+                    if dark: marker_fill(c, e)
+                    else:
+                        c.drawPath(e.path, paint)
+                        if big: fill_streaks(c, e)
+                    seg, tp = partial(e.zig, e.zlen * p)
+                    c.drawPath(seg, skia.Paint(AntiAlias=True, Style=skia.Paint.kStroke_Style, StrokeWidth=30,
+                                               StrokeCap=skia.Paint.kRound_Cap, StrokeJoin=skia.Paint.kRound_Join,
+                                               BlendMode=skia.BlendMode.kDstIn, Color=WHITE))
+                    c.restore()
+                    if tp:
+                        # follow the colouring with a calmer, averaged hand path
+                        d0 = e.zlen * p
+                        pa = partial(e.zig, max(0.01, d0 - 70))[1] or tp; pb = partial(e.zig, min(e.zlen, d0 + 70))[1] or tp
+                        tip = ((pa[0] + tp[0] + pb[0]) / 3, (pa[1] + tp[1] + pb[1]) / 3) + hand_of(e)
+            elif e.kind == "stroke":
+                if p >= 1: draw_marker(c, e.path, e)
+                else:
+                    tp = draw_marker(c, None, e, e.length * p)
+                    if tp is None: tp = partial(e.path, e.length * p)[1]
+                    if tp: tip = (tp[0], tp[1]) + hand_of(e)
             else:
-                tp = draw_marker(c, None, e, e.length * p)
-                if tp is None: tp = partial(e.path, e.length * p)[1]
-                if tp: tip = (tp[0], tp[1]) + hand_of(e)
-        else:
-            f = skia.Font(TF[e.font], e.size)
-            paint = skia.Paint(Color=e.color, AntiAlias=True)
-            if p >= 1:
-                c.drawString(e.text, e.x0, e.y, f, paint)
-            else:
-                c.save()
-                xr = e.x0 + e.tw * p
-                c.clipRect(skia.Rect.MakeLTRB(e.x0 - 20, e.y - e.size * 1.3, xr, e.y + e.size * 0.5))
-                c.drawString(e.text, e.x0, e.y, f, paint)
-                c.restore()
-                tip = (xr, e.y - e.size * 0.3 + 12 * math.sin(t * 40), "draw")
+                f = skia.Font(TF[e.font], e.size)
+                paint = skia.Paint(Color=e.color, AntiAlias=True)
+                if p >= 1:
+                    c.drawString(e.text, e.x0, e.y, f, paint)
+                else:
+                    c.save()
+                    xr = e.x0 + e.tw * p
+                    c.clipRect(skia.Rect.MakeLTRB(e.x0 - 20, e.y - e.size * 1.3, xr, e.y + e.size * 0.5))
+                    c.drawString(e.text, e.x0, e.y, f, paint)
+                    c.restore()
+                    tip = (xr, e.y - e.size * 0.3 + 12 * math.sin(t * 40), "draw")
+        finally:
+            if mv is not None: c.restore()
     return tip
 
 _BOARD = []

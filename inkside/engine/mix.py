@@ -33,7 +33,8 @@ def fade(x, a=0.03, b=0.08):
 def put(track, clip, t, gain):
     if clip is None: return
     i = int(t * SR)
-    if i >= len(track): return
+    if i < 0: clip, i = clip[-i:], 0
+    if i >= len(track) or len(clip) == 0: return
     n = min(len(clip), len(track) - i)
     track[i:i + n] += clip[:n] * gain
 

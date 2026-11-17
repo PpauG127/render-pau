@@ -1,0 +1,24 @@
+name: photos
+on:
+  workflow_dispatch:
+    inputs:
+      dir: {description: "folder under inkside/assets/photos", required: true}
+permissions: {contents: write}
+jobs:
+  get:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: download
+        run: |
+          cd "inkside/assets/photos/${{ inputs.dir }}"
+          python3 -c "
+          import json,urllib.request
+          for k,v in json.load(open('sources.json')).items():
+              r=urllib.request.Request(v['url'],headers={'User-Agent':'InksideStories/1.0 (github.com/PpauG127/render-pau)'})
+              open(k,'wb').write(urllib.request.urlopen(r).read()); print(k)
+          "
+      - name: commit
+        run: |
+          git config user.name github-actions; git config user.email actions@github.com
+          git add -f inkside/assets/photos && git commit -m "photos: ${{ inputs.dir }}" && git push || echo nothing

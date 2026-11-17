@@ -424,6 +424,249 @@
    "page": "https://pixabay.com/music/solo-piano-haunted-piano-halloween-430085/",
    "path": "piano/haunted_piano_halloween.mp3",
    "content_id": false
+  },
+  "sea_1": {
+   "category": "sea",
+   "file": "freesound_community-ocean-ambiance-night-67157.mp3",
+   "seconds": 59,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/14/audio_0dde2611f9.mp3?filename=freesound_community-ocean-ambiance-night-67157.mp3",
+   "page": "https://pixabay.com/sound-effects/67157/",
+   "path": "sea/ocean_night.mp3",
+   "content_id": false
+  },
+  "sea_2": {
+   "category": "sea",
+   "file": "freesound_community-sea-at-night-17353.mp3",
+   "seconds": 210,
+   "url": "https://cdn.pixabay.com/download/audio/2022/02/07/audio_bd1a83c5c3.mp3?filename=freesound_community-sea-at-night-17353.mp3",
+   "page": "https://pixabay.com/sound-effects/17353/",
+   "path": "sea/sea_at_night.mp3",
+   "content_id": false
+  },
+  "storm_1": {
+   "category": "storm",
+   "file": "soundreality-sea-storm-wind-308764.mp3",
+   "seconds": 60,
+   "url": "https://cdn.pixabay.com/download/audio/2025/03/03/audio_5844116a5e.mp3?filename=soundreality-sea-storm-wind-308764.mp3",
+   "page": "https://pixabay.com/sound-effects/308764/",
+   "path": "storm/sea_storm_wind.mp3",
+   "content_id": false
+  },
+  "storm_2": {
+   "category": "storm",
+   "file": "chrysalyn-immersive-ocean-storm-ambience-with-roaring-waves-and-wind-562429.mp3",
+   "seconds": 30,
+   "url": "https://cdn.pixabay.com/download/audio/2026/07/11/audio_1472b045cd.mp3?filename=chrysalyn-immersive-ocean-storm-ambience-with-roaring-waves-and-wind-562429.mp3",
+   "page": "https://pixabay.com/sound-effects/562429/",
+   "path": "storm/ocean_storm_roaring.mp3",
+   "content_id": false
+  },
+  "storm_3": {
+   "category": "storm",
+   "file": "freesound_community-atlantic-storm-58999.mp3",
+   "seconds": 128,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/13/audio_8c407ecd0f.mp3?filename=freesound_community-atlantic-storm-58999.mp3",
+   "page": "https://pixabay.com/sound-effects/58999/",
+   "path": "storm/atlantic_storm.mp3",
+   "content_id": false
+  },
+  "radio_1": {
+   "category": "radio",
+   "file": "dragon-studio-radio-static-323621.mp3",
+   "seconds": 8,
+   "url": "https://cdn.pixabay.com/download/audio/2025/04/06/audio_7ad9983b3e.mp3?filename=dragon-studio-radio-static-323621.mp3",
+   "page": "https://pixabay.com/sound-effects/323621/",
+   "path": "radio/radio_static.mp3",
+   "content_id": false
+  },
+  "radio_2": {
+   "category": "radio",
+   "file": "freesound_community-old-radio-noise-46734.mp3",
+   "seconds": 10,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/10/audio_59a652634b.mp3?filename=freesound_community-old-radio-noise-46734.mp3",
+   "page": "https://pixabay.com/sound-effects/46734/",
+   "path": "radio/old_radio_noise.mp3",
+   "content_id": false
+  },
+  "radio_3": {
+   "category": "radio",
+   "file": "zenowaves-radio-static-break-627673.mp3",
+   "seconds": 3,
+   "url": "https://cdn.pixabay.com/download/audio/2026/10/27/audio_9d5b74caa8.mp3?filename=zenowaves-radio-static-break-627673.mp3",
+   "page": "https://pixabay.com/sound-effects/627673/",
+   "path": "radio/radio_static_break.mp3",
+   "content_id": false
+  },
+  "radio_4": {
+   "category": "radio",
+   "file": "freesound_community-radio-frequency-interference-26901.mp3",
+   "seconds": 46,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/09/audio_04b5766c9a.mp3?filename=freesound_community-radio-frequency-interference-26901.mp3",
+   "page": "https://pixabay.com/sound-effects/26901/",
+   "path": "radio/radio_interference.mp3",
+   "content_id": false
+  },
+  "morse_1": {
+   "category": "morse",
+   "file": "soundreality-morse-code-408794.mp3",
+   "seconds": 41,
+   "url": "https://cdn.pixabay.com/download/audio/2025/09/22/audio_7c858e5ac4.mp3?filename=soundreality-morse-code-408794.mp3",
+   "page": "https://pixabay.com/sound-effects/408794/",
+   "path": "morse/morse_code.mp3",
+   "content_id": false
+  },
+  "morse_2": {
+   "category": "morse",
+   "file": "universfield-morse-code-131798.mp3",
+   "seconds": 2,
+   "url": "https://cdn.pixabay.com/download/audio/2023/01/01/audio_2e90386773.mp3?filename=universfield-morse-code-131798.mp3",
+   "page": "https://pixabay.com/sound-effects/131798/",
+   "path": "morse/morse_short.mp3",
+   "content_id": false
+  },
+  "propeller_1": {
+   "category": "propeller",
+   "file": "freesound_community-prop-plane-14513.mp3",
+   "seconds": 115,
+   "url": "https://cdn.pixabay.com/download/audio/2022/01/18/audio_7d45099260.mp3?filename=freesound_community-prop-plane-14513.mp3",
+   "page": "https://pixabay.com/sound-effects/14513/",
+   "path": "propeller/prop_plane.mp3",
+   "content_id": false
+  },
+  "propeller_2": {
+   "category": "propeller",
+   "file": "freesound_community-041880_airplane-propeller-72757.mp3",
+   "seconds": 20,
+   "url": "https://cdn.pixabay.com/download/audio/2022/03/15/audio_38b85a243c.mp3?filename=freesound_community-041880_airplane-propeller-72757.mp3",
+   "page": "https://pixabay.com/sound-effects/72757/",
+   "path": "propeller/airplane_propeller.mp3",
+   "content_id": false
+  },
+  "propeller_3": {
+   "category": "propeller",
+   "file": "tanweraman-plane-sound-from-distance-hq-247602.mp3",
+   "seconds": 20,
+   "url": "https://cdn.pixabay.com/download/audio/2024/10/05/audio_06efc774ab.mp3?filename=tanweraman-plane-sound-from-distance-hq-247602.mp3",
+   "page": "https://pixabay.com/sound-effects/247602/",
+   "path": "propeller/plane_distance.mp3",
+   "content_id": false
+  },
+  "sonar_1": {
+   "category": "sonar",
+   "file": "dragon-studio-deepsea-sonar-386156.mp3",
+   "seconds": 1,
+   "url": "https://cdn.pixabay.com/download/audio/2025/08/07/audio_8b11add440.mp3?filename=dragon-studio-deepsea-sonar-386156.mp3",
+   "page": "https://pixabay.com/sound-effects/386156/",
+   "path": "sonar/deepsea_sonar.mp3",
+   "content_id": false
+  },
+  "sonar_2": {
+   "category": "sonar",
+   "file": "sunovia-sonar-ping-290188.mp3",
+   "seconds": 7,
+   "url": "https://cdn.pixabay.com/download/audio/2025/01/20/audio_be36e77882.mp3?filename=sunovia-sonar-ping-290188.mp3",
+   "page": "https://pixabay.com/sound-effects/290188/",
+   "path": "sonar/sonar_ping.mp3",
+   "content_id": false
+  },
+  "bass_1": {
+   "category": "bass",
+   "file": "dragon-studio-deep-sub-drop-450456.mp3",
+   "seconds": 7,
+   "url": "https://cdn.pixabay.com/download/audio/2025/12/12/audio_800c0ace20.mp3?filename=dragon-studio-deep-sub-drop-450456.mp3",
+   "page": "https://pixabay.com/sound-effects/450456/",
+   "path": "bass/deep_sub_drop.mp3",
+   "content_id": false
+  },
+  "bass_2": {
+   "category": "bass",
+   "file": "pwlpl-deep-bass-drop-sound-effect-521058.mp3",
+   "seconds": 4,
+   "url": "https://cdn.pixabay.com/download/audio/2026/04/24/audio_f68059b155.mp3?filename=pwlpl-deep-bass-drop-sound-effect-521058.mp3",
+   "page": "https://pixabay.com/sound-effects/521058/",
+   "path": "bass/deep_bass_drop.mp3",
+   "content_id": false
+  },
+  "bass_3": {
+   "category": "bass",
+   "file": "djartmusic-sub-bass-boom-1-302682.mp3",
+   "seconds": 4,
+   "url": "https://cdn.pixabay.com/download/audio/2025/02/18/audio_c17d97124d.mp3?filename=djartmusic-sub-bass-boom-1-302682.mp3",
+   "page": "https://pixabay.com/sound-effects/302682/",
+   "path": "bass/sub_bass_boom.mp3",
+   "content_id": false
+  },
+  "bass_4": {
+   "category": "bass",
+   "file": "zenowaves-deep-sub-boom-627605.mp3",
+   "seconds": 4,
+   "url": "https://cdn.pixabay.com/download/audio/2026/10/27/audio_4e3e63472d.mp3?filename=zenowaves-deep-sub-boom-627605.mp3",
+   "page": "https://pixabay.com/sound-effects/627605/",
+   "path": "bass/deep_sub_boom.mp3",
+   "content_id": false
+  },
+  "bass_5": {
+   "category": "bass",
+   "file": "dragon-studio-cinematic-boom-454254.mp3",
+   "seconds": 7,
+   "url": "https://cdn.pixabay.com/download/audio/2025/12/19/audio_b7914fa114.mp3?filename=dragon-studio-cinematic-boom-454254.mp3",
+   "page": "https://pixabay.com/sound-effects/454254/",
+   "path": "bass/cinematic_boom.mp3",
+   "content_id": false
+  },
+  "rumble_1": {
+   "category": "rumble",
+   "file": "crigence-low-rumble-167812.mp3",
+   "seconds": 7,
+   "url": "https://cdn.pixabay.com/download/audio/2023/09/22/audio_4f5879738b.mp3?filename=crigence-low-rumble-167812.mp3",
+   "page": "https://pixabay.com/sound-effects/167812/",
+   "path": "rumble/low_rumble.mp3",
+   "content_id": false
+  },
+  "rumble_2": {
+   "category": "rumble",
+   "file": "diff_style-disturbing-low-rumble-183748.mp3",
+   "seconds": 105,
+   "url": "https://cdn.pixabay.com/download/audio/2024/01/01/audio_86e27c98ca.mp3?filename=diff_style-disturbing-low-rumble-183748.mp3",
+   "page": "https://pixabay.com/sound-effects/183748/",
+   "path": "rumble/disturbing_low_rumble.mp3",
+   "content_id": false
+  },
+  "thunder_1": {
+   "category": "thunder",
+   "file": "universfield-thunder-strike-124463.mp3",
+   "seconds": 11,
+   "url": "https://cdn.pixabay.com/download/audio/2022/10/30/audio_65a2d39d7c.mp3?filename=universfield-thunder-strike-124463.mp3",
+   "page": "https://pixabay.com/sound-effects/124463/",
+   "path": "thunder/thunder_strike.mp3",
+   "content_id": false
+  },
+  "thunder_2": {
+   "category": "thunder",
+   "file": "u_q2hb2391vb-thunder-clap-521194.mp3",
+   "seconds": 7,
+   "url": "https://cdn.pixabay.com/download/audio/2026/04/17/audio_18fe74c15d.mp3?filename=u_q2hb2391vb-thunder-clap-521194.mp3",
+   "page": "https://pixabay.com/sound-effects/521194/",
+   "path": "thunder/thunder_clap.mp3",
+   "content_id": false
+  },
+  "underwater_1": {
+   "category": "underwater",
+   "file": "dragon-studio-deep-sea-underwater-ambience-482888.mp3",
+   "seconds": 82,
+   "url": "https://cdn.pixabay.com/download/audio/2026/02/10/audio_b1345942ff.mp3?filename=dragon-studio-deep-sea-underwater-ambience-482888.mp3",
+   "page": "https://pixabay.com/sound-effects/482888/",
+   "path": "underwater/deep_sea_ambience.mp3",
+   "content_id": false
+  },
+  "underwater_2": {
+   "category": "underwater",
+   "file": "dragon-studio-large-underwater-explosion-423651.mp3",
+   "seconds": 3,
+   "url": "https://cdn.pixabay.com/download/audio/2025/10/21/audio_917d7ec41c.mp3?filename=dragon-studio-large-underwater-explosion-423651.mp3",
+   "page": "https://pixabay.com/sound-effects/423651/",
+   "path": "underwater/underwater_explosion.mp3",
+   "content_id": false
   }
  },
  "note_music": "piano_* tracks were checked on Pixabay: NOT 'Content ID Registered' (no YouTube claims)."

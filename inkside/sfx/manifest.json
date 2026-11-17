@@ -667,6 +667,15 @@
    "page": "https://pixabay.com/sound-effects/423651/",
    "path": "underwater/underwater_explosion.mp3",
    "content_id": false
+  },
+  "pop_1": {
+   "category": "pop",
+   "file": "soft_pop.wav",
+   "seconds": 0.12,
+   "url": null,
+   "page": null,
+   "path": "pop/soft_pop.wav",
+   "source": "synthesized in-house"
   }
  },
  "note_music": "piano_* tracks were checked on Pixabay: NOT 'Content ID Registered' (no YouTube claims)."

@@ -499,10 +499,16 @@ def draw_scene(c, sc, t):
     for e in els:
         if t < e.t0: continue
         if e.kind == "image":
-            k = ease(min(1, (t - e.t0) / 0.45))
-            sc_ = e.scale * (1.12 - 0.12 * k)
-            c.save(); c.translate(e.x, e.y); c.rotate(e.rot * k + 3 * (1 - k)); c.scale(sc_, sc_)
-            c.drawImage(e.img, -e.img.width() / 2, -e.img.height() / 2, paint=skia.Paint(Alphaf=k))
+            if getattr(e, "pop", False):   # smooth pop: grows from 70% with a soft overshoot, settles its tilt
+                u = min(1, (t - e.t0) / 0.55); c1 = 1.25
+                back = 1 + (c1 + 1) * (u - 1) ** 3 + c1 * (u - 1) ** 2
+                sc_ = e.scale * (0.7 + 0.3 * back); k = min(1, u / 0.22)
+                rot = e.rot + 6 * (1 - ease(u))
+            else:
+                k = ease(min(1, (t - e.t0) / 0.45))
+                sc_ = e.scale * (1.12 - 0.12 * k); rot = e.rot * k + 3 * (1 - k)
+            c.save(); c.translate(e.x, e.y); c.rotate(rot); c.scale(sc_, sc_)
+            c.drawImage(e.img, -e.img.width() / 2, -e.img.height() / 2, skia.SamplingOptions(skia.FilterMode.kLinear), paint=skia.Paint(Alphaf=k))
             c.restore(); continue
         if t < e.ts:
             k = ease((t - e.t0) / max(1e-6, e.ts - e.t0))

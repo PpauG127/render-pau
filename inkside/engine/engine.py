@@ -318,7 +318,8 @@ def load_hands():
         return [(skia.Image.open(os.path.join(ASSETS, "hands", d, f"s{k}.png")), (fr[k]["tip"][0] + PAD, fr[k]["tip"][1] + PAD))
                 for k in sorted(fr)]
     e = json.load(open(os.path.join(ASSETS, "hands", "eraser", "eraser.json")))["tip"]
-    return {"draw": frames("black"), "red": frames("red"),
+    hb = os.path.exists(os.path.join(ASSETS, "hands", "blue"))
+    return {"draw": frames("black"), "red": frames("red"), "blue": frames("blue" if hb else "red"),
             "eraser": [(skia.Image.open(os.path.join(ASSETS, "hands", "eraser", "s.png")), (e[0] + PAD, e[1] + PAD))]}
 
 # ---------------- timeline ----------------
@@ -473,12 +474,15 @@ def marker_fill(c, e):
                                  StrokeWidth=3, StrokeCap=skia.Paint.kRound_Cap, StrokeJoin=skia.Paint.kRound_Join))
     c.restore()
 
-SEQ = {"draw": [0, 1, 3, 0, 3, 1, 2], "red": [0, 2, 3, 0, 3, 2, 1], "eraser": [0]}
+SEQ = {"draw": [0, 1, 3, 0, 3, 1, 2], "red": [0, 2, 3, 0, 3, 2, 1], "blue": [0, 2, 3, 0, 3, 2, 1], "eraser": [0]}
 def is_red(color):
     return skia.ColorGetR(color) > 150 and skia.ColorGetG(color) < 110 and skia.ColorGetB(color) < 110
 
+def is_blue(color):
+    return skia.ColorGetB(color) > 140 and skia.ColorGetR(color) < 110
+
 def hand_of(e):
-    kind = "red" if (e.kind != "fill" and is_red(e.color)) else "draw"
+    kind = "draw" if e.kind == "fill" else ("red" if is_red(e.color) else ("blue" if is_blue(e.color) else "draw"))
     seq = SEQ[kind]
     return kind, seq[(getattr(e, "gidx", 0) // 3) % len(seq)]      # change grip only every few pen lifts
 
@@ -786,7 +790,8 @@ def render_frame(c, scenes, t, hand):
     c.drawImage(light, 0, 0)
     if not _FRAME:
         import os
-        fp = os.path.join(ASSETS, "frame.png")
+        fp = os.path.join(os.environ.get("INK_STORY", ""), "frame.png")      # per-story frame wins
+        if not os.path.exists(fp): fp = os.path.join(ASSETS, "frame.png")
         _FRAME.append(skia.Image.open(fp) if os.path.exists(fp) else None)
     if _FRAME[0] is not None: c.drawImage(_FRAME[0], 0, 0)
     if tip and hand:

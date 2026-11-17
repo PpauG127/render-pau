@@ -6,7 +6,7 @@ from lib3 import ln, K_, RED, hatch_rect
 from lib4 import fig, qmark, sun
 
 YEL = "#F2C230"
-BLUE = "#3B6EA8"
+BLUE = "#1F5FB0"
 
 # ---------------- planes ----------------
 def avenger(s=1.0):
@@ -49,7 +49,7 @@ def mariner(s=1.0):
     return place(e, 0, 0, s)
 
 # ---------------- sea / sky ----------------
-def waves(w=1600, y=0, rows=2, amp=24, c=K_, lw=7, seed=1):
+def waves(w=1600, y=0, rows=2, amp=24, c=BLUE, lw=7, seed=1):
     out = []
     for r in range(rows):
         d = f"M{-w/2} {y + r*60}"
@@ -98,14 +98,14 @@ def fireball(s=1.0):
     return place(e, 0, 0, s)
 
 def seafloor(w=1500):
-    out = [ln(f"M{-w/2} 0 C{-w/4} -40 {w/4} 30 {w/2} -10", 8)]
+    out = [ln(f"M{-w/2} 0 C{-w/4} -40 {w/4} 30 {w/2} -10", 8, BLUE)]
     for x in range(int(-w/2) + 80, int(w/2), 140):
-        out.append(ln(f"M{x} -4 C{x+10} -60 {x-10} -90 {x+6} -120", 5))
+        out.append(ln(f"M{x} -4 C{x+10} -60 {x-10} -90 {x+6} -120", 5, BLUE))
     return out
 
 def bubbles(n=7, seed=2):
     r = random.Random(seed)
-    return [ln(circle(r.uniform(-60, 60), -i * 70, r.uniform(10, 22)), 5) for i in range(n)]
+    return [ln(circle(r.uniform(-60, 60), -i * 70, r.uniform(10, 22)), 5, BLUE) for i in range(n)]
 
 # ---------------- instruments / radio ----------------
 def compass(broken=False, ang=40):

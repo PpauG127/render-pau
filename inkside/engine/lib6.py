@@ -258,3 +258,92 @@ def fly(els, vx=30, vy=-4, bob=6):
     els = flat(els)
     for e in els: e.mv = g
     return els
+
+# ---------------- v2 drawings (cleaner, more realistic) ----------------
+def _star(cx, cy, r, c=K_):
+    pts = []
+    for k in range(10):
+        a = -math.pi / 2 + k * math.pi / 5; rr = r if k % 2 == 0 else r * .42
+        pts.append(f"{cx + rr*math.cos(a):.1f} {cy + rr*math.sin(a):.1f}")
+    return F(P("M" + " L".join(pts) + " Z"), c)
+
+def avenger(s=1.0):
+    """TBM Avenger, side view facing right, centred ~0,0 (~640 long)."""
+    e = [ln("M260 -20 C262 -62 236 -82 196 -84 L110 -92 L-120 -82 C-215 -74 -290 -44 -332 -18 L-334 2 C-282 14 -200 24 -100 32 L120 40 C206 40 258 22 260 -20 Z", 8),
+         ln("M112 -90 C104 -132 82 -146 -20 -146 L-84 -142 L-104 -84", 7),            # long greenhouse canopy
+         ln("M62 -142 L66 -90 M10 -146 L12 -88 M-42 -144 L-44 -86", 4),
+         ln("M-112 -86 C-114 -136 -170 -138 -172 -84", 7),                           # ball turret
+         ln("M-268 -52 L-300 -196 C-304 -214 -282 -220 -270 -206 L-206 -76", 8),     # tall tail fin
+         ln("M-300 -8 L-380 -16 C-392 -6 -384 8 -372 8 L-296 6", 6),                  # tailplane
+         ln("M30 22 L-70 74 C-76 84 -66 90 -54 88 L150 70 C166 66 172 50 166 30", 8),  # wing
+         ln("M196 -82 L196 38", 6), ln("M216 -78 L216 34", 3),                        # cowling
+         ln(oval(268, -22, 13, 22), 6), ln("M270 -160 C276 -100 274 60 266 120", 6),  # prop
+         ln(circle(-10, -22, 28), 5), _star(-10, -22, 22),
+         ln("M100 40 L104 92 M96 92 L112 92", 6)]                                    # landing gear stub
+    return place(e, 0, 0, s)
+
+def mariner(s=1.0):
+    """PBM Mariner flying boat, side view facing right, centred."""
+    e = [ln("M360 6 C362 -40 326 -74 246 -82 L-200 -84 C-300 -84 -380 -96 -444 -128 L-456 -108 C-386 -46 -300 -10 -196 16 L56 66 L64 46 L126 40 L252 48 C326 48 358 34 360 6 Z", 8),
+         ln("M232 -80 L262 -104 L306 -96 L330 -70", 6), ln("M262 -104 L270 -78 M298 -96 L300 -74", 3),   # cockpit glazing
+         ln("M-120 -84 L-60 -160 M170 -84 L120 -160", 7),                                                 # gull-wing roots
+         ln("M-110 -160 L250 -160 C262 -160 262 -178 250 -178 L-100 -180 C-114 -178 -114 -162 -110 -160 Z", 7),  # wing
+         ln("M10 -172 C10 -214 190 -214 196 -172 C190 -136 20 -136 10 -172 Z", 7),                        # engine nacelle
+         ln("M206 -250 C212 -210 212 -134 204 -96", 6), ln(oval(200, -172, 8, 14), 5),                    # prop
+         ln("M-430 -122 L-300 -126", 6),                                                                   # tailplane
+         ln("M-448 -118 L-470 -246 C-472 -262 -446 -266 -440 -250 L-396 -126", 8)]                         # fin
+    for x in (-120, -40, 40, 120):
+        e.append(ln(circle(x, -40, 12), 4))
+    e.append(ln("M-60 30 L-40 -60", 0)) if False else None
+    return place(e, 0, 0, s)
+
+def avenger_top(s=1.0):
+    """top view, nose up, like a model kit outline."""
+    e = [ln("M0 -118 C16 -114 18 -80 17 -30 L10 80 C7 100 -7 100 -10 80 L-17 -30 C-18 -80 -16 -114 0 -118 Z", 6),
+         ln("M-17 -52 L-140 -26 C-152 -22 -152 -4 -140 -2 L-17 -8 M17 -52 L140 -26 C152 -22 152 -4 140 -2 L17 -8", 6),
+         ln("M-9 68 L-56 84 C-62 92 -56 100 -48 100 L48 100 C56 100 62 92 56 84 L9 68", 5),
+         ln("M-40 -126 L40 -126", 5), ln("M-8 -76 L8 -76 L8 -30 L-8 -30 Z", 3),
+         ln(circle(-92, -22, 13), 3), ln(circle(92, -22, 13), 3)]
+    return place(e, 0, 0, s)
+
+def compass(broken=False, ang=40):
+    e = [ln(circle(0, 0, 152), 11), ln(circle(0, 0, 130), 4)]
+    for k in range(32):
+        a = k * math.pi / 16; L = 22 if k % 8 == 0 else (14 if k % 2 == 0 else 8)
+        e.append(ln(f"M{126*math.sin(a):.1f} {-126*math.cos(a):.1f} L{(126-L)*math.sin(a):.1f} {-(126-L)*math.cos(a):.1f}", 4 if k % 2 == 0 else 2))
+    # 4-point rose (faint) + letters
+    rose = "M0 -66 L14 -14 L66 0 L14 14 L0 66 L-14 14 L-66 0 L-14 -14 Z"
+    e += [ln(rose, 3, "#9a9a9a")]
+    for t, a in (("N", 0), ("E", 90), ("S", 180), ("W", 270)):
+        r = 88; ar = math.radians(a)
+        e.append(T(t, r * math.sin(ar), -r * math.cos(ar) + 15, 42, "marker", RED if t == "N" else K_))
+    a = math.radians(ang); sx, sy = math.sin(a), -math.cos(a); px, py = math.cos(a), math.sin(a)
+    tip = (sx * 104, sy * 104); tail = (-sx * 104, -sy * 104); w = 13
+    e += [F(P(f"M{tip[0]:.1f} {tip[1]:.1f} L{px*w:.1f} {py*w:.1f} L{-px*w:.1f} {-py*w:.1f} Z"), RED),
+          ln(f"M{tip[0]:.1f} {tip[1]:.1f} L{px*w:.1f} {py*w:.1f} L{tail[0]:.1f} {tail[1]:.1f} L{-px*w:.1f} {-py*w:.1f} Z", 5),
+          F(circle(0, 0, 9), K_)]
+    if broken:
+        e += [ln("M-96 -96 L-46 -40 L-64 -6 L-10 40 L-22 98", 3, "#7a7a7a"), ln("M-46 -40 L28 -70 L60 -112", 3, "#7a7a7a"), ln("M-10 40 L58 58", 3, "#7a7a7a")]
+    return e
+
+def florida(s=1.0):
+    """Florida from real coastline points (origin = Fort Lauderdale), north up."""
+    pts = [(-87.4, 31.0), (-85.0, 31.0), (-85.0, 31.0), (-82.0, 30.6), (-81.4, 30.6), (-81.3, 29.8), (-80.9, 29.0), (-80.6, 28.4),
+           (-80.4, 27.6), (-80.05, 26.7), (-80.1, 26.1), (-80.2, 25.6), (-80.4, 25.2), (-81.1, 25.15), (-81.4, 25.9), (-81.8, 26.4),
+           (-82.2, 26.9), (-82.7, 27.6), (-82.8, 28.2), (-82.7, 28.9), (-83.2, 29.3), (-83.7, 29.9), (-84.3, 30.05), (-85.0, 29.7),
+           (-85.4, 29.9), (-86.2, 30.4), (-87.4, 30.3)]
+    X = lambda lo: (lo + 80.1) * 115; Y = lambda la: -(la - 26.1) * 125
+    d = "M" + " L".join(f"{X(a):.0f} {Y(b):.0f}" for a, b in pts) + " Z"
+    e = [ln(d, 7)]
+    keys = [(-80.45, 25.05), (-80.7, 24.9), (-81.0, 24.75), (-81.35, 24.65), (-81.75, 24.56)]
+    for k, (a, b) in enumerate(keys):
+        e.append(ln(oval(X(a), Y(b), 10 - k, 4), 4))
+    return place(e, 0, 0, s)
+
+def bahamas():
+    """a few irregular islands."""
+    isl = ["M-60 -10 C-40 -24 30 -20 60 -6 C40 4 -30 8 -60 -10 Z",
+           "M100 30 C116 20 130 50 128 90 C126 120 108 130 100 110 C96 80 92 50 100 30 Z",
+           "M-90 110 C-70 98 -40 104 -30 116 C-50 126 -80 124 -90 110 Z",
+           "M20 190 C50 178 100 182 120 196 C90 208 40 206 20 190 Z"]
+    return [ln(d, 5) for d in isl]
